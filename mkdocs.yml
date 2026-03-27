@@ -1,11 +1,11 @@
-site_name: Example MkDocs Material Documentation for pypackage_template
-site_url: https://byuirpytooling.github.io/pypackage_template
+site_name: PyReel Documentation
+site_url: https://tuckertrost.github.io/pyreel
 theme:
   name: material
   icon:
-    logo: fontawesome/solid/wind
+    logo: fontawesome/solid/film
   favicon: assets/favicon.ico
-  featuers:
+  features:
     - navigation.footer
   font:
     text: Merriweather Sans
@@ -16,16 +16,16 @@ theme:
       toggle:
         icon: material/weather-sunny
         name: Dark mode
-      primary: green
-      accent: deep purple
+      primary: deep purple
+      accent: pink
 
     # Light Mode
     - scheme: default
       toggle:
         icon: material/weather-night
         name: Light mode
-      primary: blue
-      accent: deep orange
+      primary: deep purple
+      accent: pink
 
 markdown_extensions:
   - attr_list
@@ -59,11 +59,14 @@ plugins:
           options:
             show_source: false
 
+nav:
+  - Home: index.md
+  - API Reference: API.md
+  - Code Examples: code-examples.md
+
 extra:
   social:
-    - icon: fontawesome/brands/youtube
-      link: https://www.youtube.com/@byuidss
-    - icon: fontawesome/brands/linkedin
-      link: https://www.linkedin.com/school/byu-idaho
+    - icon: fontawesome/brands/github
+      link: https://github.com/tuckertrost/pyreel
 
-copyright: Copyright &copy; 2026 J. Hathaway
+copyright: Copyright &copy; 2026 Tucker Trost

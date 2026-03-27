@@ -3,34 +3,44 @@ requires = ["uv_build >= 0.9.21, <0.10.0"]
 build-backend = "uv_build"
 
 [project]
-name = "pypackage_template"
-version = "0.0.1"
-description = "A small example package managed with uv"
+name = "pyreel"
+version = "0.1.0"
+description = "Automate short-form video creation for TikTok, Reels, and YouTube Shorts"
 readme = "README.md"
-requires-python = ">=3.10"
-dependencies = [
-    "polars==1.37.0",
-]
+requires-python = ">=3.11"
+license = { text = "MIT" }
 authors = [
-  { name = "J. Hathaway", email = "hathawayj@byui.edu" },
-  { name = "Co Author", email = "coauthor@example.com" }
+  { name = "Tucker Trost", email = "tro18011@byui.edu" }
 ]
 
-# optional, if you want to distinguish current maintainers
-maintainers = [
-  { name = "Maintainer Name", email = "maintainer@example.com" }
+dependencies = [
+    "praw>=7.7.0",
+    "edge-tts>=6.1.0",
+    "whisperx>=3.1.0",
+    "moviepy>=2.0.0",
+    "yt-dlp>=2024.1.0",
+    "requests>=2.31.0",
+    "litellm>=1.30.0",
+    "python-slugify>=8.0.0",
+    "better-profanity>=0.7.0",
+    "markdown-it-py>=3.0.0",
 ]
 
 [project.optional-dependencies]
 dev = [
     "pytest",
+    "pytest-cov",
     "ruff",
-    { path = ".", develop = true },
 ]
 
-[project.scripts]
-my-uv-cli = "my_uv_package.cli:main"
+[project.urls]
+Homepage = "https://github.com/tuckertrost/pyreel"
+Documentation = "https://tuckertrost.github.io/pyreel"
 
-[tool.uv]
-# Here you can put uv-specific configuration if needed later
-# (you can leave this section out entirely for the simplest case)
+[tool.uv.build-backend]
+module-name = "pyreel"
+source-dir = "src"
+
+[tool.ruff]
+line-length = 88
+target-version = "py311"

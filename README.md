@@ -1,87 +1,188 @@
-# Building Python Packages
+# PyReel
 
-We are following the guide from [Python Packages](https://py-pkgs.org/welcome) by Tomas Beuzen and Tiffany Timbers for the structure of this template repo.  This readme documents differences from their guide and elements that need to be changed in the repo once you use this template for your own named package.
+Automate short-form vertical video creation for TikTok, Instagram Reels, and YouTube Shorts.
 
-## Files to change once template is copied
+Given a Reddit post (or an LLM-generated story), PyReel:
+- Sanitizes and optionally rewrites the text via LLM
+- Converts it to speech using Microsoft Edge TTS
+- Aligns word-level timestamps via WhisperX
+- Downloads b-roll footage (YouTube via yt-dlp, or Pexels/Pixabay as fallback)
+- Crops footage to 9:16 portrait
+- Burns karaoke-style word-by-word subtitles
+- Outputs a fully rendered `.mp4` + structured metadata bundle ready for upload
 
-These files/folders largely need to be edited to use the name of your package instead of the `pypackage_template` name. The `pyproject.toml` will also need author editing.
+LLM features are opt-in and provider-agnostic via [LiteLLM](https://github.com/BerriAI/litellm).
 
-- [`tests/test_template_package.py`](https://github.com/byuirpytooling/pypackage_template/blob/main/tests/test_template_package.py)
-- [`src/pypackage_template`](https://github.com/byuirpytooling/pypackage_template/tree/main/src/pypackage_template)
-- [`src/pypackage_template/__init__.py`](https://github.com/byuirpytooling/pypackage_template/blob/main/src/pypackage_template/__init__.py)
-- [`main/pyproject.toml`](https://github.com/byuirpytooling/pypackage_template/blob/main/pyproject.toml)
-- [`mkdocs.yml`](https://github.com/byuirpytooling/pypackage_template/blob/main/mkdocs.yml)
-- [`docs/API.md`](https://github.com/byuirpytooling/pypackage_template/blob/main/docs/API.md)
+---
 
-## Differences from the Python Packages book
+## System Dependencies
 
-###  Python Installation
+Install before using PyReel:
 
-We will use [uv](https://docs.astral.sh/uv/guides/install-python/) instead of [conda](https://anaconda.org/anaconda/conda).
+**FFmpeg**
+- macOS: `brew install ffmpeg`
+- Ubuntu/Debian: `sudo apt install ffmpeg`
+- Windows: https://ffmpeg.org/download.html
 
-### Installing uv and python
+**ImageMagick**
+- macOS: `brew install imagemagick`
+- Ubuntu/Debian: `sudo apt install imagemagick`
+- Windows: https://imagemagick.org/script/download.php
 
-1. Follow [uv's installation scripts](https://docs.astral.sh/uv/getting-started/installation/#installation-methods)
-2. Now run `uv python install --default`.
-  - You can see your available python versions with `uv python list`.
-  - If you want a specific version of python you can run `uv python install 3.12` for example.
-  - You can upgrade to the latest supported patch release for each version with `uv python upgrade`
-3. Now you can install the two python packages recommended `uv pip install poetry cookiecutter --system`
-4. I propose skipping the PyPI setup and the rest of chapter 2 for now.
+---
 
-## mkdocs-material
-
-1. mkdocs-material with `uv pip install mkdocs-material --system`
-2. [Guide on mkdocs-material](https://www.youtube.com/watch?v=xlABhbnNrfI) and his [companion website for this video](https://jameswillett.dev/getting-started-with-material-for-mkdocs/)
- - However, we are using `uv` and will use `uv run mkdocs new .` instead of `mkdocs new .`
-
-## Handy `uv` commands 
-
-### Install a package from Github repository
+## Installation
 
 ```bash
-uv pip install "git+https://github.com/byuirpytooling/pypackage_template.git@main"
+pip install pyreel
 ```
 
-### Installing the package in development into the Python environment 
-
-The `--editable` allows us to create an installation that points back to your project directory instead of copying the code into site-packages. With this, we can now edit the source files, and the installed package in the environment is automatically updated.
-
+Or with uv:
 ```bash
-uv sync --editable
+uv add pyreel
 ```
 
-The above option replaces examples where you would run.
+---
 
-```bash
-uv pip install -e .
+## Quick Start
+
+### Check dependencies first
+
+```python
+import pyreel
+
+pyreel.check_dependencies()
 ```
 
-## Directory structure
+### Basic usage (Reddit fetch + yt-dlp b-roll)
 
-```bash
-pypackage_template
-├── .readthedocs.yml           ┐
-├── CHANGELOG.md               │
-├── CONDUCT.md                 │
-├── CONTRIBUTING.md            │
-├── docs                       │
-│   ├── changelog.md           │
-│   ├── conduct.md             │
-│   ├── conf.py                │ 
-│   ├── contributing.md        │ Package documentation
-│   ├── example.ipynb          │
-│   ├── index.md               │
-│   ├── make.bat               │
-│   ├── Makefile               │
-│   └── requirements.txt       │
-├── LICENSE                    │
-├── README.md                  ┘
-├── pyproject.toml             ┐ 
-├── src                        │
-│   └── pypackage_template     │ Package source code, metadata,
-│       ├── __init__.py        │ and build instructions 
-│       └── pycounts.py        ┘
-└── tests                      ┐
-    └── test_pycounts.py       ┘ Package tests
+```python
+import pyreel
+
+pyreel.check_dependencies()
+
+config = pyreel.PyReelConfig(
+    reddit_client_id="your_client_id",
+    reddit_client_secret="your_client_secret",
+    story_mode=pyreel.StoryMode.FETCH,
+    max_duration=60,
+    broll_source=pyreel.BrollSource.YTDLP,
+    broll_keyword="minecraft parkour no commentary",
+    subtitle_style=pyreel.SubtitleStyleConfig(
+        style=pyreel.SubtitleStyle.BOLD_WHITE,
+        font_size=80,
+    ),
+    output_dir="./my_videos",
+)
+
+output_paths = pyreel.generate(subreddit="AmItheAsshole", config=config)
+print(f"Video ready: {output_paths[0]}")
 ```
+
+### With LLM rewriting
+
+```python
+config = pyreel.PyReelConfig(
+    reddit_client_id="...",
+    reddit_client_secret="...",
+    story_mode=pyreel.StoryMode.LLM_REWRITE,
+    llm_provider="openai/gpt-4o",
+    llm_api_key="sk-...",
+    max_duration=60,
+    broll_source=pyreel.BrollSource.PEXELS,
+    pexels_api_key="your_pexels_key",
+)
+output_paths = pyreel.generate(subreddit="relationship_advice", config=config)
+```
+
+### Multi-part series
+
+```python
+config = pyreel.PyReelConfig(
+    reddit_client_id="...",
+    reddit_client_secret="...",
+    story_mode=pyreel.StoryMode.LLM_REWRITE,
+    series_mode=pyreel.SeriesMode.SPLIT,
+    llm_provider="anthropic/claude-3-5-sonnet-20241022",
+    llm_api_key="sk-ant-...",
+    max_duration=60,
+    broll_source=pyreel.BrollSource.YTDLP,
+    broll_keyword="subway surfers gameplay",
+)
+output_paths = pyreel.generate(subreddit="tifu", config=config)
+for i, path in enumerate(output_paths, 1):
+    print(f"Part {i}: {path}")
+```
+
+### Dry run (validate config without producing video)
+
+```python
+config = pyreel.PyReelConfig(dry_run=True, reddit_client_id="...", reddit_client_secret="...")
+pyreel.generate(subreddit="AmItheAsshole", config=config)
+# Prints validation report. No video generated.
+```
+
+---
+
+## Output Structure
+
+```
+output/run_20240325_143022_aita-neighbour/
+  final_video.mp4      <- always kept
+  metadata.json        <- always kept
+  story_final.txt      <- always kept
+  broll_sources.txt    <- always kept
+  run_config.json      <- always kept
+  audio.wav            <- deleted if keep_artifacts=False
+  alignment.json       <- deleted if keep_artifacts=False
+  broll_raw.mp4        <- deleted if keep_artifacts=False
+  broll_cropped.mp4    <- deleted if keep_artifacts=False
+  story_raw.txt        <- deleted if keep_artifacts=False
+  story_clean.txt      <- deleted if keep_artifacts=False
+```
+
+---
+
+## Reddit API Setup
+
+1. Go to https://www.reddit.com/prefs/apps
+2. Create a new "script" application
+3. Note your `client_id` and `client_secret`
+4. Pass them to `PyReelConfig`
+
+---
+
+## B-Roll Sources
+
+| Source | Config | Notes |
+|--------|--------|-------|
+| `BrollSource.YTDLP` | `broll_keyword` | Downloads from YouTube. See Legal Notice. |
+| `BrollSource.PEXELS` | `pexels_api_key` | Free license, attribution in broll_sources.txt |
+| `BrollSource.PIXABAY` | `pixabay_api_key` | Free license, attribution in broll_sources.txt |
+| `BrollSource.LOCAL` | `broll_local_path` | Your own video file (.mp4 or .mov) |
+
+PyReel tries sources in order: yt-dlp -> Pexels -> Pixabay. If all fail, raises `PyReelBrollError`.
+
+---
+
+## Legal Notice
+
+**You are solely responsible for ensuring you have the right to use any downloaded content.**
+
+- **YouTube / yt-dlp**: Content downloaded via yt-dlp from YouTube may be subject to copyright. Check the video's license before use. Many creators do not permit redistribution. PyReel assumes no liability for copyright infringement. Review YouTube's Terms of Service and the creator's license before publishing any video.
+- **Pexels**: Content is used under the [Pexels License](https://www.pexels.com/license/). Attribution is written to `broll_sources.txt` automatically.
+- **Pixabay**: Content is used under the [Pixabay License](https://pixabay.com/service/license/). Attribution is written to `broll_sources.txt` automatically.
+
+PyReel writes a `broll_sources.txt` file on every run regardless of source. Review it before publishing any content.
+
+---
+
+## Resuming Interrupted Runs
+
+PyReel uses a checkpoint system. If a run is interrupted, re-run with the same config and it will resume from the last completed stage — no re-downloading b-roll or re-rendering already-completed steps.
+
+---
+
+## License
+
+MIT — see [LICENSE](LICENSE)

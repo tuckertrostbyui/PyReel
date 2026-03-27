@@ -1,1 +1,2 @@
-from template_package import template_package
+# This file is intentionally left empty.
+# The original pypackage_template has been replaced by pyreel.

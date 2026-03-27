@@ -40,42 +40,56 @@ If you are proposing a feature:
 
 ## Get Started!
 
-Ready to contribute? Here's how to set up `template_package` for local development.
+Ready to contribute? Here's how to set up `pyreel` for local development.
 
-1. Download a copy of `template_package` locally.
+1. Fork the repo on GitHub and clone your fork locally.
 
-2. Create and activate a conda environment for `template_package`:
-
-    ```console
-    $ conda create -n template_package python=3.12
-    $ conda activate template_package
-    ```
-
-3. Install `template_package` using `poetry`:
+2. Install [uv](https://docs.astral.sh/uv/):
 
     ```console
-    $ poetry install
+    $ pip install uv
     ```
 
-4. Use `git` (or similar) to create a branch for local development and make your changes:
+3. Install `pyreel` with dev dependencies:
+
+    ```console
+    $ uv sync --extra dev
+    ```
+
+4. Install system dependencies (FFmpeg and ImageMagick):
+
+    ```console
+    # macOS
+    $ brew install ffmpeg imagemagick
+
+    # Ubuntu/Debian
+    $ sudo apt install ffmpeg imagemagick
+    ```
+
+5. Use `git` to create a branch for local development and make your changes:
 
     ```console
     $ git checkout -b name-of-your-bugfix-or-feature
     ```
 
-5. When you're done making changes, check that your changes conform to any code formatting requirements and pass any tests.
+6. When you're done making changes, run the tests:
 
-6. Commit your changes and open a pull request.
+    ```console
+    $ uv run pytest tests/ -v
+    ```
+
+7. Commit your changes and open a pull request.
 
 ## Pull Request Guidelines
 
 Before you submit a pull request, check that it meets these guidelines:
 
 1. The pull request should include additional tests if appropriate.
-2. If the pull request adds functionality, the docs should be updated.
-3. The pull request should work for all currently supported operating systems and versions of Python.
+2. All external API calls must be mocked in tests — no real network calls.
+3. If the pull request adds functionality, the docs should be updated.
+4. The pull request should work for all currently supported operating systems and Python >= 3.11.
 
 ## Code of Conduct
 
-Please note that the `template_package` project is released with a
+Please note that the `pyreel` project is released with a
 Code of Conduct. By contributing to this project you agree to abide by its terms.
