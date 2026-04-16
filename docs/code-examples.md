@@ -1,91 +1,309 @@
-An example of a codeblock for Python:
+# Code Examples
 
-### Code Blocks
+End-to-end examples for the most common PyReel workflows.
+All examples assume `pip install pyreel` and system dependencies (FFmpeg, ImageMagick) installed.
 
-=== "Python Code"
+---
 
-    ```py title='add_numbers.py' linenums='1' hl_lines='6'
+## Basic Reddit Fetch
 
-    # Function to add two numbers
-    def add_two_numbers(num1, num2):
-        return num1 + num2
+The simplest real-world invocation — fetch a random top post from a subreddit and render it over a local video file.
 
-    # Example usage
-    result = add_two_numbers(5, 3)
-    print('The sum is:', result)
+```python
+import pyreel
+
+config = pyreel.PyReelConfig(
+    reddit_client_id="YOUR_CLIENT_ID",
+    reddit_client_secret="YOUR_CLIENT_SECRET",
+    story_mode=pyreel.StoryMode.FETCH,
+    max_duration=60,
+    broll_local_path="./data/broll/gameplay.mp4",
+    output_dir="./output",
+)
+
+paths = pyreel.generate(subreddit="AmItheAsshole", config=config)
+print(f"Video: {paths[0]}")
+```
+
+!!! tip "Auto-discovery"
+
+    If `broll_local_path` is not set, PyReel looks for the first `.mp4` or `.mov` file
+    in `./data/broll/` relative to where your script is run.
+
+---
+
+## Fetch a Specific Post by ID
+
+Pass `post_id` to target a specific Reddit submission (the alphanumeric ID from the URL):
+
+```python
+paths = pyreel.generate(
+    subreddit="tifu",
+    post_id="abc123",   # from reddit.com/r/tifu/comments/abc123/...
+    config=config,
+)
+```
+
+---
+
+## LLM Rewrite
+
+Fetch a Reddit post and rewrite it with an LLM for better pacing, hooks, and social-media style.
+Requires an LLM provider and API key.
+
+```python
+import pyreel
+
+config = pyreel.PyReelConfig(
+    reddit_client_id="YOUR_CLIENT_ID",
+    reddit_client_secret="YOUR_CLIENT_SECRET",
+
+    story_mode=pyreel.StoryMode.LLM_REWRITE,
+    llm_provider="openai/gpt-4o",
+    llm_api_key="sk-...",
+
+    max_duration=60,
+    broll_local_path="./data/broll/minecraft.mp4",
+    output_dir="./output",
+)
+
+paths = pyreel.generate(subreddit="AmItheAsshole", config=config)
+```
+
+!!! note "Provider-agnostic"
+
+    `llm_provider` follows the [LiteLLM](https://docs.litellm.ai/docs/providers) naming convention.
+    Examples: `"openai/gpt-4o"`, `"anthropic/claude-3-5-sonnet-20241022"`, `"gemini/gemini-1.5-pro"`.
+
+---
+
+## LLM-Generated Story (no Reddit)
+
+Generate a completely original story from a prompt — no Reddit credentials needed.
+
+```python
+import pyreel
+
+config = pyreel.PyReelConfig(
+    story_mode=pyreel.StoryMode.LLM_WRITE,
+    llm_provider="anthropic/claude-3-5-sonnet-20241022",
+    llm_api_key="sk-ant-...",
+
+    max_duration=45,
+    broll_local_path="./data/broll/city.mp4",
+    output_dir="./output",
+)
+
+paths = pyreel.generate(
+    prompt="Write a dramatic AITA story about a wedding cake disaster",
+    config=config,
+)
+```
+
+---
+
+## Subtitle Styles
+
+PyReel supports four karaoke subtitle styles. Use `SubtitleStyleConfig` to pick and customize one.
+
+=== "BOLD_WHITE"
+
+    ```python
+    import pyreel
+
+    config = pyreel.PyReelConfig(
+        ...,
+        subtitle_style=pyreel.SubtitleStyleConfig(
+            style=pyreel.SubtitleStyle.BOLD_WHITE,
+            font_size=80,
+            active_color="white",
+            inactive_color="#888888",
+            outline_color="black",
+            outline_width=3,
+            position=("center", 1350),
+        ),
+    )
     ```
 
-=== "The code again"
+=== "HIGHLIGHT"
 
-    ```py title='add_numbers.py' linenums='1' hl_lines='7'
-    # Function to add two numbers
-    def add_two_numbers(num1, num2):
-        return num1 + num2
-
-    # Example usage
-    result = add_two_numbers(5, 3)
-    print('The sum is:', result)
+    ```python
+    config = pyreel.PyReelConfig(
+        ...,
+        subtitle_style=pyreel.SubtitleStyleConfig(
+            style=pyreel.SubtitleStyle.HIGHLIGHT,
+            font_size=72,
+            active_color="yellow",
+            inactive_color="white",
+        ),
+    )
     ```
 
-!!! note "This is amazing"
+=== "ALLCAPS"
 
-    Where are we?
+    ```python
+    config = pyreel.PyReelConfig(
+        ...,
+        subtitle_style=pyreel.SubtitleStyleConfig(
+            style=pyreel.SubtitleStyle.ALLCAPS,
+            font_size=80,
+            active_color="white",
+        ),
+    )
+    ```
 
-??? note "This is hidden"
+=== "ROLLING"
 
-    Where are we?
+    ```python
+    config = pyreel.PyReelConfig(
+        ...,
+        subtitle_style=pyreel.SubtitleStyleConfig(
+            style=pyreel.SubtitleStyle.ROLLING,
+            font_size=68,
+            active_color="white",
+            inactive_color="#666666",
+        ),
+    )
+    ```
 
-## Flowchart
+---
+
+## Title Card Customization
+
+The Reddit-style title card is shown at the start of each video. Customize it with `TitleCardConfig`.
+
+```python
+import pyreel
+
+config = pyreel.PyReelConfig(
+    ...,
+    title_card=pyreel.TitleCardConfig(
+        enabled=True,
+        username="u/throwaway_legal",
+        avatar_color="#0079D3",     # Reddit blue
+        emoji_row="😱🔥💔",
+        vote_count="47.2k",
+        duration=5.0,
+        card_position="bottom",
+        show_verified=False,
+    ),
+)
+```
+
+Use a custom avatar image instead of the colored circle:
+
+```python
+title_card=pyreel.TitleCardConfig(
+    avatar_image="./assets/avatar.png",
+    username="StoryTime",
+),
+```
+
+Disable the title card entirely:
+
+```python
+title_card=pyreel.TitleCardConfig(enabled=False),
+```
+
+---
+
+## Multi-Part Series
+
+For long Reddit posts that exceed `max_duration`, use `SeriesMode.SPLIT` to automatically split the
+story into parts using an LLM and produce one video per part.
+
+```python
+import pyreel
+
+config = pyreel.PyReelConfig(
+    reddit_client_id="YOUR_CLIENT_ID",
+    reddit_client_secret="YOUR_CLIENT_SECRET",
+
+    story_mode=pyreel.StoryMode.LLM_REWRITE,
+    series_mode=pyreel.SeriesMode.SPLIT,
+
+    llm_provider="openai/gpt-4o",
+    llm_api_key="sk-...",
+
+    max_duration=60,
+    broll_local_path="./data/broll/subway_surfers.mp4",
+    output_dir="./output",
+)
+
+paths = pyreel.generate(subreddit="tifu", config=config)
+
+for i, path in enumerate(paths, 1):
+    print(f"Part {i}: {path}")
+```
+
+!!! note
+
+    `SeriesMode.SPLIT` requires an LLM provider — the split is performed by the LLM.
+    It cannot be used with `StoryMode.FETCH` alone.
+
+---
+
+## Custom Crop
+
+Override the default center-crop with a specific pixel origin:
+
+```python
+import pyreel
+
+config = pyreel.PyReelConfig(
+    ...,
+    crop=pyreel.CropConfig(
+        strategy=pyreel.CropStrategy.CUSTOM,
+        custom_x=420,   # left edge of the 1080px wide crop window
+        custom_y=0,     # top edge
+    ),
+)
+```
+
+The output crop window is always 1080×1920 pixels; `custom_x` and `custom_y` set the top-left origin.
+
+---
+
+## Dry Run
+
+Validate dependencies and configuration without producing any video:
+
+```python
+import pyreel
+
+config = pyreel.PyReelConfig(
+    reddit_client_id="YOUR_CLIENT_ID",
+    reddit_client_secret="YOUR_CLIENT_SECRET",
+    broll_local_path="./data/broll/gameplay.mp4",
+    dry_run=True,
+)
+
+result = pyreel.generate(subreddit="AmItheAsshole", config=config)
+# result is []
+# PyReel logs: [PyReel dry_run] Dependencies OK. Run directory: ./output/run_...
+```
+
+Use `dry_run=True` in CI/CD or before a production run to confirm the environment is correctly configured.
+
+---
+
+## Pipeline Stage Diagram
 
 ```mermaid
 graph LR
-  A[Start] --> B{Failure?};
-  B -->|Yes| C[Investigate...];
-  C --> D[Debug];
-  D --> B;
-  B ---->|No| E[Success!];
+    A[deps_check] --> B[story_fetch]
+    B --> C[story_sanitize]
+    C --> D[story_prepare]
+    D --> E[tts_generate]
+    E --> F[whisper_align]
+    F --> G[broll_fetch]
+    G --> H[broll_crop]
+    H --> I[subtitles_render]
+    I --> J[title_card_render]
+    J --> K[video_compose]
+    K --> L[metadata_generate]
+    L --> M[output_finalize]
 ```
 
-## Sequence Diagrams
-
-```mermaid
-sequenceDiagram
-  autonumber
-  Server->>Terminal: Send request
-  loop Health
-      Terminal->>Terminal: Check for health
-  end
-  Note right of Terminal: System online
-  Terminal-->>Server: Everything is OK
-  Terminal->>Database: Request customer data
-  Database-->>Terminal: Customer data
-```
-
-``` mermaid
-classDiagram
-  Person <|-- Student
-  Person <|-- Professor
-  Person : +String name
-  Person : +String phoneNumber
-  Person : +String emailAddress
-  Person: +purchaseParkingPass()
-  Address "1" <-- "0..1" Person:lives at
-  class Student{
-    +int studentNumber
-    +int averageMark
-    +isEligibleToEnrol()
-    +getSeminarsTaken()
-  }
-  class Professor{
-    +int salary
-  }
-  class Address{
-    +String street
-    +String city
-    +String state
-    +int postalCode
-    +String country
-    -validate()
-    +outputAsLabel()
-  }
-```
+PyReel's checkpoint system records each completed stage to a `.checkpoint` file in the run directory.
+If a run is interrupted at any stage, re-running with the same config resumes automatically from where it left off.

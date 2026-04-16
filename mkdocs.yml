@@ -58,6 +58,8 @@ plugins:
           paths: [src]
           options:
             show_source: false
+            show_if_no_docstring: false
+            members_order: source
 
 nav:
   - Home: index.md
@@ -67,6 +69,8 @@ nav:
 extra:
   social:
     - icon: fontawesome/brands/github
-      link: https://github.com/tuckertrost/pyreel
+      link: https://www.github.com/tuckertrostbyui
+    - icon: fontawesome/brands/linkedin
+      link: https://www.linkedin.com/in/tuckertrost
 
 copyright: Copyright &copy; 2026 Tucker Trost
