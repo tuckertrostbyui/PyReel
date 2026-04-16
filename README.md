@@ -6,10 +6,10 @@ Given a Reddit post (or an LLM-generated story), PyReel:
 - Sanitizes and optionally rewrites the text via LLM
 - Converts it to speech using Microsoft Edge TTS
 - Aligns word-level timestamps via WhisperX
-- Downloads b-roll footage (YouTube via yt-dlp, or Pexels/Pixabay as fallback)
+- Sources b-roll footage from a local video file
 - Crops footage to 9:16 portrait
 - Burns karaoke-style word-by-word subtitles
-- Outputs a fully rendered `.mp4` + structured metadata bundle ready for upload
+- Outputs a fully rendered `.mp4` + structured metadata bundle
 
 LLM features are opt-in and provider-agnostic via [LiteLLM](https://github.com/BerriAI/litellm).
 
@@ -34,12 +34,12 @@ Install before using PyReel:
 ## Installation
 
 ```bash
-pip install pyreel
+pip install git+https://github.com/tuckertrostbyui/PyReel.git
 ```
 
 Or with uv:
 ```bash
-uv add pyreel
+uv pip install git+https://github.com/tuckertrostbyui/PyReel.git
 ```
 
 ---
@@ -54,20 +54,17 @@ import pyreel
 pyreel.check_dependencies()
 ```
 
-### Basic usage (Reddit fetch + yt-dlp b-roll)
+### Basic usage (Reddit fetch + local b-roll)
 
 ```python
 import pyreel
-
-pyreel.check_dependencies()
 
 config = pyreel.PyReelConfig(
     reddit_client_id="your_client_id",
     reddit_client_secret="your_client_secret",
     story_mode=pyreel.StoryMode.FETCH,
     max_duration=60,
-    broll_source=pyreel.BrollSource.YTDLP,
-    broll_keyword="minecraft parkour no commentary",
+    broll_local_path="./data/broll/gameplay.mp4",
     subtitle_style=pyreel.SubtitleStyleConfig(
         style=pyreel.SubtitleStyle.BOLD_WHITE,
         font_size=80,
@@ -89,8 +86,7 @@ config = pyreel.PyReelConfig(
     llm_provider="openai/gpt-4o",
     llm_api_key="sk-...",
     max_duration=60,
-    broll_source=pyreel.BrollSource.PEXELS,
-    pexels_api_key="your_pexels_key",
+    broll_local_path="./data/broll/gameplay.mp4",
 )
 output_paths = pyreel.generate(subreddit="relationship_advice", config=config)
 ```
@@ -106,8 +102,7 @@ config = pyreel.PyReelConfig(
     llm_provider="anthropic/claude-3-5-sonnet-20241022",
     llm_api_key="sk-ant-...",
     max_duration=60,
-    broll_source=pyreel.BrollSource.YTDLP,
-    broll_keyword="subway surfers gameplay",
+    broll_local_path="./data/broll/subway_surfers.mp4",
 )
 output_paths = pyreel.generate(subreddit="tifu", config=config)
 for i, path in enumerate(output_paths, 1):
@@ -127,11 +122,10 @@ pyreel.generate(subreddit="AmItheAsshole", config=config)
 ## Output Structure
 
 ```
-output/run_20240325_143022_aita-neighbour/
+output/run_20260415_120000_aita-neighbour/
   final_video.mp4      <- always kept
   metadata.json        <- always kept
   story_final.txt      <- always kept
-  broll_sources.txt    <- always kept
   run_config.json      <- always kept
   audio.wav            <- deleted if keep_artifacts=False
   alignment.json       <- deleted if keep_artifacts=False
@@ -152,34 +146,24 @@ output/run_20240325_143022_aita-neighbour/
 
 ---
 
-## B-Roll Sources
+## B-Roll
 
-| Source | Config | Notes |
-|--------|--------|-------|
-| `BrollSource.YTDLP` | `broll_keyword` | Downloads from YouTube. See Legal Notice. |
-| `BrollSource.PEXELS` | `pexels_api_key` | Free license, attribution in broll_sources.txt |
-| `BrollSource.PIXABAY` | `pixabay_api_key` | Free license, attribution in broll_sources.txt |
-| `BrollSource.LOCAL` | `broll_local_path` | Your own video file (.mp4 or .mov) |
+PyReel uses a local video file as b-roll. Point `broll_local_path` to any `.mp4` or `.mov` file:
 
-PyReel tries sources in order: yt-dlp -> Pexels -> Pixabay. If all fail, raises `PyReelBrollError`.
+```python
+config = pyreel.PyReelConfig(
+    broll_local_path="./data/broll/gameplay.mp4",
+    ...
+)
+```
 
----
-
-## Legal Notice
-
-**You are solely responsible for ensuring you have the right to use any downloaded content.**
-
-- **YouTube / yt-dlp**: Content downloaded via yt-dlp from YouTube may be subject to copyright. Check the video's license before use. Many creators do not permit redistribution. PyReel assumes no liability for copyright infringement. Review YouTube's Terms of Service and the creator's license before publishing any video.
-- **Pexels**: Content is used under the [Pexels License](https://www.pexels.com/license/). Attribution is written to `broll_sources.txt` automatically.
-- **Pixabay**: Content is used under the [Pixabay License](https://pixabay.com/service/license/). Attribution is written to `broll_sources.txt` automatically.
-
-PyReel writes a `broll_sources.txt` file on every run regardless of source. Review it before publishing any content.
+If `broll_local_path` is not set, PyReel auto-discovers the first `.mp4` or `.mov` in `./data/broll/` relative to the working directory.
 
 ---
 
 ## Resuming Interrupted Runs
 
-PyReel uses a checkpoint system. If a run is interrupted, re-run with the same config and it will resume from the last completed stage — no re-downloading b-roll or re-rendering already-completed steps.
+PyReel uses a checkpoint system. If a run is interrupted, re-run with the same config and it will resume from the last completed stage — no re-processing already-completed steps.
 
 ---
 
