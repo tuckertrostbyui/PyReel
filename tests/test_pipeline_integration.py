@@ -5,7 +5,7 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from pyreel.config import BrollSource, PyReelConfig, StoryMode
+from pyreel.config import PyReelConfig, StoryMode
 from pyreel.exceptions import PyReelDepsError, PyReelPipelineError
 from pyreel.pipeline import run_pipeline
 
@@ -53,14 +53,25 @@ def _make_json_artifact_side_effect(artifact_path: str, data: dict):
     return side_effect
 
 
+def _meta_side_effect(story, title, run_id, config, source_url=None, output_path=None):
+    if output_path:
+        os.makedirs(os.path.dirname(os.path.abspath(output_path)), exist_ok=True)
+        with open(output_path, "w") as f:
+            json.dump({
+                "title": "t", "description": "d", "hashtags": [],
+                "platforms": [], "generated_at": "2024-01-01T00:00:00+00:00",
+                "story_mode": "fetch", "source_url": "", "run_id": run_id,
+            }, f)
+    return {}
+
+
 @pytest.fixture
 def basic_config(tmp_path):
     return PyReelConfig(
         reddit_client_id="test_id",
         reddit_client_secret="test_secret",
         story_mode=StoryMode.FETCH,
-        broll_source=BrollSource.YTDLP,
-        broll_keyword="minecraft",
+    
         output_dir=str(tmp_path / "output"),
         keep_artifacts=True,
     )
@@ -70,7 +81,7 @@ def _patch_all_stages(config, monkeypatch_or_patch=None):
     """Returns a dict of patch targets."""
     return {
         "pyreel.deps.check_dependencies": MagicMock(
-            return_value={"passed": True, "issues": [], "warnings": []}
+            return_value={"passed": True, "issues": []}
         ),
         "pyreel.subtitles.check_and_patch_imagemagick": MagicMock(return_value=False),
         "pyreel.reddit.fetch_post": MagicMock(return_value=FAKE_POST),
@@ -83,7 +94,7 @@ class TestPipelineSingleMode:
         output_dir = str(tmp_path / "output")
         basic_config.output_dir = output_dir
 
-        with patch("pyreel.deps.check_dependencies", return_value={"passed": True, "issues": [], "warnings": []}), \
+        with patch("pyreel.deps.check_dependencies", return_value={"passed": True, "issues": []}), \
              patch("pyreel.subtitles.check_and_patch_imagemagick", return_value=False), \
              patch("pyreel.reddit.fetch_post", return_value=FAKE_POST), \
              patch("pyreel.sanitize.sanitize_text", side_effect=lambda t, c: t), \
@@ -109,7 +120,7 @@ class TestPipelineSingleMode:
                 return FAKE_ALIGNMENT
             mock_align.side_effect = align_se
 
-            def broll_se(keyword, run_dir, cfg):
+            def broll_se(run_dir, cfg):
                 path = os.path.join(run_dir, "broll_raw.mp4")
                 _make_artifact(path)
                 return path
@@ -125,13 +136,7 @@ class TestPipelineSingleMode:
                 return out_path
             mock_compose.side_effect = compose_se
 
-            def meta_se(story, title, run_id, config, source_url=None, output_path=None):
-                if output_path:
-                    os.makedirs(os.path.dirname(os.path.abspath(output_path)), exist_ok=True)
-                    with open(output_path, "w") as f:
-                        json.dump({"title": "t", "description": "d", "hashtags": [], "platforms": [], "generated_at": "2024-01-01T00:00:00+00:00", "story_mode": "fetch", "source_url": "", "run_id": run_id}, f)
-                return {}
-            mock_meta.side_effect = meta_se
+            mock_meta.side_effect = _meta_side_effect
 
             audio_mock = MagicMock()
             audio_mock.duration = 10.0
@@ -152,7 +157,7 @@ class TestPipelineSingleMode:
             output_dir=str(tmp_path / "output"),
         )
 
-        with patch("pyreel.deps.check_dependencies", return_value={"passed": True, "issues": [], "warnings": []}), \
+        with patch("pyreel.deps.check_dependencies", return_value={"passed": True, "issues": []}), \
              patch("pyreel.subtitles.check_and_patch_imagemagick", return_value=False):
             result = run_pipeline(subreddit="tifu", config=config)
 
@@ -164,7 +169,7 @@ class TestPipelineSingleMode:
             output_dir=str(tmp_path / "output"),
         )
 
-        with patch("pyreel.deps.check_dependencies", return_value={"passed": True, "issues": [], "warnings": []}), \
+        with patch("pyreel.deps.check_dependencies", return_value={"passed": True, "issues": []}), \
              patch("pyreel.subtitles.check_and_patch_imagemagick", return_value=False), \
              patch("pyreel.reddit.fetch_post") as mock_reddit, \
              patch("pyreel.tts.generate_audio") as mock_tts:
@@ -184,7 +189,7 @@ class TestPipelineSingleMode:
             keep_artifacts=True,
         )
 
-        with patch("pyreel.deps.check_dependencies", return_value={"passed": True, "issues": [], "warnings": []}), \
+        with patch("pyreel.deps.check_dependencies", return_value={"passed": True, "issues": []}), \
              patch("pyreel.subtitles.check_and_patch_imagemagick", return_value=False), \
              patch("pyreel.reddit.fetch_post", side_effect=Exception("Reddit API down")):
 
@@ -202,7 +207,7 @@ class TestPipelineSingleMode:
             keep_artifacts=True,
         )
 
-        with patch("pyreel.deps.check_dependencies", return_value={"passed": True, "issues": [], "warnings": []}), \
+        with patch("pyreel.deps.check_dependencies", return_value={"passed": True, "issues": []}), \
              patch("pyreel.subtitles.check_and_patch_imagemagick", return_value=False), \
              patch("pyreel.reddit.fetch_post", return_value=FAKE_POST), \
              patch("pyreel.sanitize.sanitize_text", side_effect=lambda t, c: t), \
@@ -231,13 +236,11 @@ class TestCheckpointSkipping:
             reddit_client_id="test_id",
             reddit_client_secret="test_secret",
             story_mode=StoryMode.FETCH,
-            broll_source=BrollSource.YTDLP,
-            broll_keyword="minecraft",
             output_dir=str(tmp_path / "output"),
             keep_artifacts=True,
         )
 
-        with patch("pyreel.deps.check_dependencies", return_value={"passed": True, "issues": [], "warnings": []}), \
+        with patch("pyreel.deps.check_dependencies", return_value={"passed": True, "issues": []}), \
              patch("pyreel.subtitles.check_and_patch_imagemagick", return_value=False), \
              patch("pyreel.reddit.fetch_post", return_value=FAKE_POST) as mock_reddit, \
              patch("pyreel.sanitize.sanitize_text", side_effect=lambda t, c: t), \
@@ -262,7 +265,7 @@ class TestCheckpointSkipping:
                 return FAKE_ALIGNMENT
             mock_align.side_effect = align_se
 
-            def broll_se(keyword, run_dir, cfg):
+            def broll_se(run_dir, cfg):
                 path = os.path.join(run_dir, "broll_raw.mp4")
                 _make_artifact(path)
                 return path
@@ -278,17 +281,7 @@ class TestCheckpointSkipping:
                 return out_path
             mock_compose.side_effect = compose_se
 
-            def meta_se(story, title, run_id, config, source_url=None, output_path=None):
-                if output_path:
-                    os.makedirs(os.path.dirname(os.path.abspath(output_path)), exist_ok=True)
-                    with open(output_path, "w") as f:
-                        json.dump({
-                            "title": "t", "description": "d", "hashtags": [],
-                            "platforms": [], "generated_at": "2024-01-01T00:00:00+00:00",
-                            "story_mode": "fetch", "source_url": "", "run_id": run_id
-                        }, f)
-                return {}
-            mock_meta.side_effect = meta_se
+            mock_meta.side_effect = _meta_side_effect
 
             audio_mock = MagicMock()
             audio_mock.duration = 10.0
@@ -304,13 +297,11 @@ class TestCheckpointSkipping:
             reddit_client_id="test_id",
             reddit_client_secret="test_secret",
             story_mode=StoryMode.FETCH,
-            broll_source=BrollSource.YTDLP,
-            broll_keyword="test",
             output_dir=str(tmp_path / "output"),
             keep_artifacts=True,
         )
 
-        with patch("pyreel.deps.check_dependencies", return_value={"passed": True, "issues": [], "warnings": []}), \
+        with patch("pyreel.deps.check_dependencies", return_value={"passed": True, "issues": []}), \
              patch("pyreel.subtitles.check_and_patch_imagemagick", return_value=False), \
              patch("pyreel.reddit.fetch_post", return_value=FAKE_POST), \
              patch("pyreel.sanitize.sanitize_text", side_effect=lambda t, c: t), \
@@ -335,7 +326,7 @@ class TestCheckpointSkipping:
                 return FAKE_ALIGNMENT
             mock_align.side_effect = align_se
 
-            def broll_se(keyword, run_dir, cfg):
+            def broll_se(run_dir, cfg):
                 path = os.path.join(run_dir, "broll_raw.mp4")
                 _make_artifact(path)
                 return path
@@ -351,17 +342,7 @@ class TestCheckpointSkipping:
                 return out_path
             mock_compose.side_effect = compose_se
 
-            def meta_se(story, title, run_id, config, source_url=None, output_path=None):
-                if output_path:
-                    os.makedirs(os.path.dirname(os.path.abspath(output_path)), exist_ok=True)
-                    with open(output_path, "w") as f:
-                        json.dump({
-                            "title": "t", "description": "d", "hashtags": [],
-                            "platforms": [], "generated_at": "2024-01-01T00:00:00+00:00",
-                            "story_mode": "fetch", "source_url": "", "run_id": run_id
-                        }, f)
-                return {}
-            mock_meta.side_effect = meta_se
+            mock_meta.side_effect = _meta_side_effect
 
             audio_mock = MagicMock()
             audio_mock.duration = 10.0

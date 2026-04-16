@@ -15,7 +15,7 @@ def generate_metadata(
     source_url: Optional[str] = None,
     output_path: Optional[str] = None,
 ) -> dict:
-    if config.llm_provider:
+    if config.llm_provider and config.llm_api_key:
         from . import llm
         meta = llm.generate_metadata(story, config)
     else:

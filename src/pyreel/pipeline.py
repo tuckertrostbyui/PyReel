@@ -14,7 +14,7 @@ from .checkpoint import (
     save_checkpoint,
     stage_complete,
 )
-from .config import BrollSource, PyReelConfig, SeriesMode, StoryMode
+from .config import PyReelConfig, SeriesMode, StoryMode
 from .exceptions import PyReelPipelineError
 
 logger = logging.getLogger(__name__)
@@ -89,21 +89,32 @@ def _run_single(
     from . import align, broll, compose, crop, metadata, reddit, sanitize, subtitles, tts
 
     # Stage 2: story_fetch
+    title_meta: dict = {}
     if not stage_complete(run_dir, "story_fetch"):
         try:
-            if config.story_mode == StoryMode.FETCH:
-                post = reddit.fetch_post(subreddit, post_id, config)
+            if config.story_mode in (StoryMode.FETCH, StoryMode.LLM_REWRITE, StoryMode.LLM_SUMMARIZE):
+                post = reddit.fetch_post(subreddit or "", post_id, config)
                 story = post["title"] + "\n\n" + post["body"]
                 source_url = post["url"]
+                title_meta = {"title": post["title"], "author": post.get("author", "")}
             elif config.story_mode == StoryMode.LLM_WRITE:
                 from . import llm as llm_mod
                 story = llm_mod.write_story(prompt or "", config)
+                first_line = story.split("\n")[0].strip()[:200]
+                title_meta = {"title": first_line, "author": ""}
             else:
                 story = story or ""
+                first_line = story.split("\n")[0].strip()[:200]
+                title_meta = {"title": first_line, "author": ""}
 
             raw_path = os.path.join(run_dir, "story_raw.txt")
             with open(raw_path, "w") as f:
-                f.write(story)
+                f.write(story or "")
+
+            title_meta_path = os.path.join(run_dir, "title_meta.json")
+            with open(title_meta_path, "w") as f:
+                json.dump(title_meta, f, indent=2)
+
             save_checkpoint(run_dir, "story_fetch")
         except PyReelPipelineError:
             raise
@@ -114,11 +125,17 @@ def _run_single(
         raw_path = os.path.join(run_dir, "story_raw.txt")
         with open(raw_path) as f:
             story = f.read()
+        title_meta_path = os.path.join(run_dir, "title_meta.json")
+        if os.path.exists(title_meta_path):
+            with open(title_meta_path) as f:
+                title_meta = json.load(f)
+        else:
+            title_meta = {"title": story.split("\n")[0].strip()[:200], "author": ""}
 
     # Stage 3: story_sanitize
     if not stage_complete(run_dir, "story_sanitize"):
         try:
-            clean = sanitize.sanitize_text(story, config)
+            clean = sanitize.sanitize_text(story or "", config)
             clean_path = os.path.join(run_dir, "story_clean.txt")
             with open(clean_path, "w") as f:
                 f.write(clean)
@@ -138,7 +155,7 @@ def _run_single(
         try:
             from . import llm as llm_mod
             if config.story_mode == StoryMode.LLM_REWRITE:
-                final_story = llm_mod.rewrite_for_social(clean, config)
+                final_story = llm_mod.rewrite_with_hook(clean, config)
             elif config.story_mode == StoryMode.LLM_SUMMARIZE:
                 final_story = llm_mod.summarize_to_fit(clean, config)
             else:
@@ -163,6 +180,8 @@ def _run_single(
     if not stage_complete(run_dir, "tts_generate"):
         try:
             tts.generate_audio(final_story, audio_path, config)
+        except PyReelPipelineError:
+            raise
         except Exception as e:
             raise PyReelPipelineError(f"Stage tts_generate failed: {e}") from e
         save_checkpoint(run_dir, "tts_generate")
@@ -172,6 +191,8 @@ def _run_single(
     if not stage_complete(run_dir, "whisper_align"):
         try:
             alignment = align.align_audio(audio_path, alignment_path, config)
+        except PyReelPipelineError:
+            raise
         except Exception as e:
             raise PyReelPipelineError(f"Stage whisper_align failed: {e}") from e
         save_checkpoint(run_dir, "whisper_align")
@@ -180,15 +201,14 @@ def _run_single(
             alignment = json.load(f)
 
     # Stage 7: broll_fetch
-    broll_keyword = config.broll_keyword or final_story[:50]
     broll_raw_path = os.path.join(run_dir, "broll_raw.mp4")
     if not stage_complete(run_dir, "broll_fetch"):
         try:
-            broll_result = broll.fetch_broll(broll_keyword, run_dir, config)
+            broll_raw_path = broll.fetch_broll(run_dir, config)
+        except PyReelPipelineError:
+            raise
         except Exception as e:
             raise PyReelPipelineError(f"Stage broll_fetch failed: {e}") from e
-        if config.broll_source == BrollSource.LOCAL:
-            broll_raw_path = broll_result
         save_checkpoint(run_dir, "broll_fetch")
 
     # Stage 8: broll_crop
@@ -196,6 +216,8 @@ def _run_single(
     if not stage_complete(run_dir, "broll_crop"):
         try:
             crop.crop_to_portrait(broll_raw_path, broll_cropped_path, config)
+        except PyReelPipelineError:
+            raise
         except Exception as e:
             raise PyReelPipelineError(f"Stage broll_crop failed: {e}") from e
         save_checkpoint(run_dir, "broll_crop")
@@ -210,15 +232,50 @@ def _run_single(
                 video_duration = audio_clip.duration
                 audio_clip.close()
                 subtitle_clips = subtitles.build_subtitle_clips(alignment, video_duration, config)
+            except PyReelPipelineError:
+                raise
             except Exception as e:
                 raise PyReelPipelineError(f"Stage subtitles_render failed: {e}") from e
         save_checkpoint(run_dir, "subtitles_render")
+
+    # Stage 9.5: title_card_render
+    # Rebuild the clip whenever video_compose hasn't run yet (clip is in-memory, no artifact).
+    if config.title_card.enabled and not stage_complete(run_dir, "video_compose"):
+        try:
+            from . import title_card as title_card_mod
+            _tc_title = title_meta.get("title", "")
+            _tc_author = (
+                config.title_card.username
+                or title_meta.get("author", "")
+                or "Anonymous"
+            )
+            # Calculate how long the title takes to be read from the alignment.
+            # Falls back to config.title_card.duration if alignment is insufficient.
+            tc_duration = (
+                title_card_mod.calculate_title_duration(_tc_title, alignment)
+                or config.title_card.duration
+            )
+            # Only show subtitles for the story body — suppress clips that start
+            # during the title card phase.
+            story_subtitle_clips = [c for c in subtitle_clips if c.start >= tc_duration]
+            tc_clip = title_card_mod.build_title_card_clip(
+                _tc_title, _tc_author, config, duration=tc_duration
+            )
+            subtitle_clips = [tc_clip] + story_subtitle_clips
+        except PyReelPipelineError:
+            raise
+        except Exception as e:
+            raise PyReelPipelineError(f"Stage title_card_render failed: {e}") from e
+        if not stage_complete(run_dir, "title_card_render"):
+            save_checkpoint(run_dir, "title_card_render")
 
     # Stage 10: video_compose
     final_video_path = os.path.join(run_dir, "final_video.mp4")
     if not stage_complete(run_dir, "video_compose"):
         try:
             compose.compose_video(broll_cropped_path, audio_path, subtitle_clips, final_video_path, config)
+        except PyReelPipelineError:
+            raise
         except Exception as e:
             raise PyReelPipelineError(f"Stage video_compose failed: {e}") from e
         save_checkpoint(run_dir, "video_compose")
@@ -236,6 +293,8 @@ def _run_single(
                 source_url=source_url,
                 output_path=metadata_path,
             )
+        except PyReelPipelineError:
+            raise
         except Exception as e:
             raise PyReelPipelineError(f"Stage metadata_generate failed: {e}") from e
         save_checkpoint(run_dir, "metadata_generate")
@@ -306,15 +365,20 @@ def run_pipeline(
 
         # Fetch and sanitize first
         if config.story_mode == StoryMode.FETCH:
-            post = reddit_mod.fetch_post(subreddit, post_id, config)
+            post = reddit_mod.fetch_post(subreddit or "", post_id, config)
             story = post["title"] + "\n\n" + post["body"]
             source_url = post["url"]
+            split_title_meta = {"title": post["title"], "author": post.get("author", "")}
         elif config.story_mode == StoryMode.LLM_WRITE:
             story = llm_mod.write_story(prompt or "", config)
             source_url = ""
+            first_line = story.split("\n")[0].strip()[:200]
+            split_title_meta = {"title": first_line, "author": ""}
         else:
             story = prompt or ""
             source_url = ""
+            first_line = story.split("\n")[0].strip()[:200]
+            split_title_meta = {"title": first_line, "author": ""}
 
         clean = sanitize_mod.sanitize_text(story, config)
         parts = llm_mod.split_into_parts(clean, config)
@@ -329,6 +393,9 @@ def run_pipeline(
             with open(raw_path, "w") as f:
                 f.write(part)
             save_checkpoint(part_dir, "story_fetch")
+
+            with open(os.path.join(part_dir, "title_meta.json"), "w") as f:
+                json.dump(split_title_meta, f, indent=2)
 
             clean_path = os.path.join(part_dir, "story_clean.txt")
             with open(clean_path, "w") as f:

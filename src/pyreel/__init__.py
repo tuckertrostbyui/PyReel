@@ -9,11 +9,11 @@ from .config import (
     PyReelConfig,
     SubtitleStyle,
     SubtitleStyleConfig,
-    BrollSource,
     StoryMode,
     SeriesMode,
     CropStrategy,
     CropConfig,
+    TitleCardConfig,
 )
 from .exceptions import (
     PyReelError,
@@ -28,6 +28,7 @@ from .exceptions import (
     PyReelCropError,
     PyReelSubtitleError,
     PyReelComposeError,
+    PyReelTitleCardError,
 )
 from .deps import check_dependencies
 from .pipeline import run_pipeline
@@ -53,7 +54,6 @@ __all__ = [
     "PyReelConfig",
     "SubtitleStyle",
     "SubtitleStyleConfig",
-    "BrollSource",
     "StoryMode",
     "SeriesMode",
     "CropStrategy",
@@ -70,4 +70,6 @@ __all__ = [
     "PyReelCropError",
     "PyReelSubtitleError",
     "PyReelComposeError",
+    "TitleCardConfig",
+    "PyReelTitleCardError",
 ]

@@ -1,13 +1,6 @@
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Optional
-
-
-class BrollSource(str, Enum):
-    YTDLP = "yt-dlp"
-    PEXELS = "pexels"
-    PIXABAY = "pixabay"
-    LOCAL = "local"
+from typing import Optional, Union
 
 
 class StoryMode(str, Enum):
@@ -43,8 +36,7 @@ class SubtitleStyleConfig:
     inactive_color: str = "#888888"
     outline_color: str = "black"
     outline_width: int = 3
-    position: str = "center"
-    words_per_segment: int = 1
+    position: Union[str, tuple] = ("center", 1350)  # str or (x, y) tuple — passed to moviepy with_position()
 
 
 @dataclass
@@ -55,10 +47,25 @@ class CropConfig:
 
 
 @dataclass
+class TitleCardConfig:
+    enabled: bool = True
+    username: Optional[str] = None       # None = use Reddit author; falls back to "Anonymous"
+    avatar_color: str = "#FF4500"        # Reddit orange; ignored when avatar_image is set
+    avatar_image: Optional[str] = None   # Path to an image file to use as the avatar
+    emoji_row: str = "🎭😱💔🤯🌟😤🔥"    # set to "" to hide the row
+    vote_count: str = "99+"
+    duration: float = 5.0               # seconds the card is visible
+    font: Optional[str] = None          # None = auto-detect system sans-serif
+    show_verified: bool = True
+    card_position: str = "bottom"       # "bottom", "center", or "top"
+
+
+@dataclass
 class PyReelConfig:
     # Story
     story_mode: StoryMode = StoryMode.FETCH
     series_mode: SeriesMode = SeriesMode.SINGLE
+    min_duration: Optional[int] = None
     max_duration: int = 60
 
     # Reddit
@@ -79,13 +86,7 @@ class PyReelConfig:
     whisper_device: str = "cpu"
 
     # B-roll
-    broll_source: BrollSource = BrollSource.YTDLP
-    broll_keyword: Optional[str] = None
-    broll_local_path: Optional[str] = None
-    pexels_api_key: Optional[str] = None
-    pixabay_api_key: Optional[str] = None
-    broll_min_duration: int = 300
-    broll_candidates: int = 3
+    broll_local_path: Optional[str] = None  # None = auto-discover from ./data/broll/
 
     # Crop
     crop: CropConfig = field(default_factory=CropConfig)
@@ -93,6 +94,9 @@ class PyReelConfig:
     # Subtitles
     subtitle_style: SubtitleStyleConfig = field(default_factory=SubtitleStyleConfig)
     burn_subtitles: bool = True
+
+    # Title card
+    title_card: TitleCardConfig = field(default_factory=TitleCardConfig)
 
     # Output
     output_dir: str = "./output"

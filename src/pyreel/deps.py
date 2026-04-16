@@ -1,14 +1,14 @@
+import os
 import shutil
 import sys
 from typing import Optional
 
-from .config import BrollSource, PyReelConfig, StoryMode
+from .config import PyReelConfig, StoryMode
 from .exceptions import PyReelDepsError
 
 
 def check_dependencies(config: Optional[PyReelConfig] = None) -> dict:
     issues = []
-    warnings = []
 
     # 1. FFmpeg
     if not shutil.which("ffmpeg"):
@@ -58,36 +58,13 @@ def check_dependencies(config: Optional[PyReelConfig] = None) -> dict:
                     f"story_mode={config.story_mode.value} requires llm_api_key in PyReelConfig."
                 )
 
-        # 6. Pexels key
-        if config.broll_source == BrollSource.PEXELS:
-            if not config.pexels_api_key:
-                issues.append(
-                    "broll_source=PEXELS requires pexels_api_key in PyReelConfig."
-                )
+        # 6. B-roll path (optional — falls back to ./data/broll/ if not set)
+        if config.broll_local_path and not os.path.exists(config.broll_local_path):
+            issues.append(
+                f"broll_local_path does not exist: {config.broll_local_path}"
+            )
 
-        # 7. Pixabay key
-        if config.broll_source == BrollSource.PIXABAY:
-            if not config.pixabay_api_key:
-                issues.append(
-                    "broll_source=PIXABAY requires pixabay_api_key in PyReelConfig."
-                )
-
-        # 8. Local path
-        if config.broll_source == BrollSource.LOCAL:
-            import os
-            if not config.broll_local_path:
-                issues.append(
-                    "broll_source=LOCAL requires broll_local_path in PyReelConfig."
-                )
-            elif not os.path.exists(config.broll_local_path):
-                issues.append(
-                    f"broll_local_path does not exist: {config.broll_local_path}"
-                )
-
-    for warning in warnings:
-        print(f"[PyReel WARNING] {warning}")
-
-    result = {"passed": len(issues) == 0, "issues": issues, "warnings": warnings}
+    result = {"passed": len(issues) == 0, "issues": issues}
 
     if issues:
         raise PyReelDepsError(

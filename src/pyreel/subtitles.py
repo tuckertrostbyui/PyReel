@@ -51,6 +51,17 @@ def check_and_patch_imagemagick() -> bool:
     return False
 
 
+def _shadow_position(position, offset: int = 3):
+    """Return a position shifted `offset` pixels downward for drop-shadow use.
+    Works with (x, y) tuples where y is a pixel int/float; returns None for
+    bare string positions (caller should skip the shadow in that case)."""
+    if isinstance(position, tuple) and len(position) == 2:
+        x, y = position
+        if isinstance(y, (int, float)):
+            return (x, y + offset)
+    return None
+
+
 def _resolve_font(config: PyReelConfig) -> str:
     if config.subtitle_style.font:
         return config.subtitle_style.font
@@ -118,8 +129,7 @@ def build_subtitle_clips(
     config: PyReelConfig,
 ) -> list:
     try:
-        from moviepy.video.VideoClip import TextClip
-        from moviepy.video.compositing.CompositeVideoClip import CompositeVideoClip
+        from moviepy import TextClip, CompositeVideoClip
     except ImportError as e:
         raise PyReelSubtitleError("moviepy is not installed.") from e
 
@@ -155,7 +165,7 @@ def build_subtitle_clips(
 
 def _make_text_clip(text, font, font_size, color, position, start, end, stroke_color=None, stroke_width=0):
     try:
-        from moviepy.video.VideoClip import TextClip
+        from moviepy import TextClip
     except ImportError as e:
         raise PyReelSubtitleError("moviepy is not installed.") from e
 
@@ -163,6 +173,7 @@ def _make_text_clip(text, font, font_size, color, position, start, end, stroke_c
         "font": font,
         "font_size": font_size,
         "color": color,
+        "margin": (0, stroke_width + 40),  # prevent bottom-pixel clipping of descenders/stroke
     }
     if stroke_color and stroke_width > 0:
         kwargs["stroke_color"] = stroke_color
@@ -234,15 +245,18 @@ def _build_allcaps(words, font, style, video_duration):
         end = word_info.get("end", start + 0.3)
         end = min(end, video_duration)
 
-        shadow = _make_text_clip(
-            text=text,
-            font=font,
-            font_size=large_size,
-            color=style.outline_color,
-            position=("center", "center+3"),
-            start=start,
-            end=end,
-        )
+        shadow_pos = _shadow_position(style.position)
+        if shadow_pos is not None:
+            shadow = _make_text_clip(
+                text=text,
+                font=font,
+                font_size=large_size,
+                color=style.outline_color,
+                position=shadow_pos,
+                start=start,
+                end=end,
+            )
+            clips.append(shadow)
         main = _make_text_clip(
             text=text,
             font=font,
@@ -252,7 +266,7 @@ def _build_allcaps(words, font, style, video_duration):
             start=start,
             end=end,
         )
-        clips.extend([shadow, main])
+        clips.append(main)
     return clips
 
 

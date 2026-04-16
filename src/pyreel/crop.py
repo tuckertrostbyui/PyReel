@@ -1,4 +1,5 @@
 import os
+import random
 
 from .config import CropStrategy, PyReelConfig
 from .exceptions import PyReelCropError
@@ -9,14 +10,21 @@ TARGET_HEIGHT = 1920
 
 def crop_to_portrait(input_path: str, output_path: str, config: PyReelConfig) -> str:
     try:
-        from moviepy.video.io.VideoFileClip import VideoFileClip
-        from moviepy.video.fx.crop import crop as moviepy_crop
-        from moviepy.video.fx.resize import resize
+        from moviepy import VideoFileClip
     except ImportError as e:
         raise PyReelCropError("moviepy is not installed.") from e
 
     try:
         clip = VideoFileClip(input_path)
+
+        # Apply a random start offset so the same source video yields different clips.
+        # Leave at least 30 s of footage at the end; if the video is that short, start at 0.
+        min_remaining = 30.0
+        max_start = max(0.0, clip.duration - min_remaining)
+        if max_start > 0:
+            start = random.uniform(0, max_start)
+            clip = clip.subclipped(start)
+
         source_width, source_height = clip.size
 
         strategy = config.crop.strategy
@@ -27,8 +35,7 @@ def crop_to_portrait(input_path: str, output_path: str, config: PyReelConfig) ->
             else:
                 crop_width = int(source_height * 9 / 16)
                 x_offset = (source_width - crop_width) // 2
-                cropped = moviepy_crop(
-                    clip,
+                cropped = clip.cropped(
                     x1=x_offset,
                     y1=0,
                     x2=x_offset + crop_width,
@@ -39,8 +46,7 @@ def crop_to_portrait(input_path: str, output_path: str, config: PyReelConfig) ->
             x = config.crop.custom_x or 0
             y = config.crop.custom_y or 0
             crop_width = int(source_height * 9 / 16)
-            cropped = moviepy_crop(
-                clip,
+            cropped = clip.cropped(
                 x1=x,
                 y1=y,
                 x2=x + crop_width,
@@ -49,7 +55,7 @@ def crop_to_portrait(input_path: str, output_path: str, config: PyReelConfig) ->
         else:
             raise PyReelCropError(f"Unknown crop strategy: {strategy}")
 
-        final = resize(cropped, newsize=(TARGET_WIDTH, TARGET_HEIGHT))
+        final = cropped.resized(new_size=(TARGET_WIDTH, TARGET_HEIGHT))
 
         os.makedirs(os.path.dirname(os.path.abspath(output_path)), exist_ok=True)
         final.write_videofile(

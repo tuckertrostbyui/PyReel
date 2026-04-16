@@ -15,10 +15,8 @@ def compose_video(
     config: PyReelConfig,
 ) -> str:
     try:
-        from moviepy.video.io.VideoFileClip import VideoFileClip
-        from moviepy.audio.io.AudioFileClip import AudioFileClip
-        from moviepy.video.compositing.CompositeVideoClip import CompositeVideoClip
-        import moviepy.video.fx.all as vfx
+        from moviepy import VideoFileClip, AudioFileClip, CompositeVideoClip
+        from moviepy.video.fx import Loop
     except ImportError as e:
         raise PyReelComposeError("moviepy is not installed.") from e
 
@@ -30,7 +28,7 @@ def compose_video(
         broll_duration = broll.duration
 
         if broll_duration < audio_duration:
-            broll = broll.fx(vfx.loop, duration=audio_duration)
+            broll = broll.with_effects([Loop(duration=audio_duration)])
         else:
             broll = broll.subclipped(0, audio_duration)
 

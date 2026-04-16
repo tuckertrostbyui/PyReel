@@ -1,7 +1,6 @@
 import pytest
 
 from pyreel.config import (
-    BrollSource,
     CropConfig,
     CropStrategy,
     PyReelConfig,
@@ -13,12 +12,6 @@ from pyreel.config import (
 
 
 class TestEnums:
-    def test_broll_source_values(self):
-        assert BrollSource.YTDLP == "yt-dlp"
-        assert BrollSource.PEXELS == "pexels"
-        assert BrollSource.PIXABAY == "pixabay"
-        assert BrollSource.LOCAL == "local"
-
     def test_story_mode_values(self):
         assert StoryMode.FETCH == "fetch"
         assert StoryMode.LLM_REWRITE == "rewrite"
@@ -40,7 +33,7 @@ class TestEnums:
         assert CropStrategy.CUSTOM == "custom"
 
     def test_enums_are_strings(self):
-        for enum_cls in [BrollSource, StoryMode, SeriesMode, SubtitleStyle, CropStrategy]:
+        for enum_cls in [StoryMode, SeriesMode, SubtitleStyle, CropStrategy]:
             for member in enum_cls:
                 assert isinstance(member, str), f"{member} should be a str"
 
@@ -55,8 +48,7 @@ class TestSubtitleStyleConfig:
         assert s.inactive_color == "#888888"
         assert s.outline_color == "black"
         assert s.outline_width == 3
-        assert s.position == "center"
-        assert s.words_per_segment == 1
+        assert s.position == ("center", 1350)
 
     def test_custom_values(self):
         s = SubtitleStyleConfig(style=SubtitleStyle.ALLCAPS, font_size=100)
@@ -93,13 +85,7 @@ class TestPyReelConfig:
         assert c.tts_rate == "+0%"
         assert c.whisper_model == "base"
         assert c.whisper_device == "cpu"
-        assert c.broll_source == BrollSource.YTDLP
-        assert c.broll_keyword is None
         assert c.broll_local_path is None
-        assert c.pexels_api_key is None
-        assert c.pixabay_api_key is None
-        assert c.broll_min_duration == 300
-        assert c.broll_candidates == 3
         assert c.burn_subtitles is True
         assert c.output_dir == "./output"
         assert c.keep_artifacts is False
