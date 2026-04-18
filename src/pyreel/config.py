@@ -72,6 +72,7 @@ class PyReelConfig:
     reddit_client_id: Optional[str] = None
     reddit_client_secret: Optional[str] = None
     reddit_user_agent: str = "pyreel/0.1.0"
+    history_file: Optional[str] = None  # path to per-account post history JSON
 
     # LLM (opt-in)
     llm_provider: Optional[str] = None

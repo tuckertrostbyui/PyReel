@@ -15,7 +15,7 @@ from .checkpoint import (
     stage_complete,
 )
 from .config import PyReelConfig, SeriesMode, StoryMode
-from .exceptions import PyReelPipelineError
+from .exceptions import PyReelHistoryError, PyReelPipelineError, PyReelRedditError
 
 logger = logging.getLogger(__name__)
 
@@ -93,10 +93,28 @@ def _run_single(
     if not stage_complete(run_dir, "story_fetch"):
         try:
             if config.story_mode in (StoryMode.FETCH, StoryMode.LLM_REWRITE, StoryMode.LLM_SUMMARIZE):
-                post = reddit.fetch_post(subreddit or "", post_id, config)
+                _exclude: set = set()
+                if config.history_file and not post_id:
+                    from .history import PostHistory as _PostHistory
+                    _exclude = _PostHistory(config.history_file).used_ids
+
+                try:
+                    post = reddit.fetch_post(subreddit or "", post_id, config, exclude_ids=_exclude)
+                except PyReelRedditError as e:
+                    if _exclude:
+                        raise PyReelHistoryError(
+                            f"No new posts found in r/{subreddit} — all available posts have "
+                            f"already been used. History file: {config.history_file}"
+                        ) from e
+                    raise
+
                 story = post["title"] + "\n\n" + post["body"]
                 source_url = post["url"]
                 title_meta = {"title": post["title"], "author": post.get("author", "")}
+
+                fetched_post_path = os.path.join(run_dir, "fetched_post.json")
+                with open(fetched_post_path, "w") as _fp:
+                    json.dump(post, _fp, indent=2)
             elif config.story_mode == StoryMode.LLM_WRITE:
                 from . import llm as llm_mod
                 story = llm_mod.write_story(prompt or "", config)
@@ -116,7 +134,7 @@ def _run_single(
                 json.dump(title_meta, f, indent=2)
 
             save_checkpoint(run_dir, "story_fetch")
-        except PyReelPipelineError:
+        except (PyReelPipelineError, PyReelHistoryError):
             raise
         except Exception as e:
             logger.error(f"[pipeline] Stage story_fetch failed: {e}")
@@ -303,6 +321,20 @@ def _run_single(
     if not stage_complete(run_dir, "output_finalize"):
         if not config.keep_artifacts:
             _cleanup_artifacts(run_dir)
+
+        if config.history_file:
+            fetched_post_path = os.path.join(run_dir, "fetched_post.json")
+            if os.path.exists(fetched_post_path):
+                from .history import PostHistory as _PostHistory
+                with open(fetched_post_path) as _fp:
+                    _post = json.load(_fp)
+                _PostHistory(config.history_file).record(
+                    post_id=_post["id"],
+                    title=_post["title"],
+                    url=_post["url"],
+                    run_id=run_id,
+                )
+
         save_checkpoint(run_dir, "output_finalize")
 
     return final_video_path
@@ -365,10 +397,28 @@ def run_pipeline(
 
         # Fetch and sanitize first
         if config.story_mode == StoryMode.FETCH:
-            post = reddit_mod.fetch_post(subreddit or "", post_id, config)
+            _split_exclude: set = set()
+            if config.history_file and not post_id:
+                from .history import PostHistory as _PostHistory
+                _split_exclude = _PostHistory(config.history_file).used_ids
+
+            try:
+                post = reddit_mod.fetch_post(subreddit or "", post_id, config, exclude_ids=_split_exclude)
+            except PyReelRedditError as e:
+                if _split_exclude:
+                    raise PyReelHistoryError(
+                        f"No new posts found in r/{subreddit} — all available posts have "
+                        f"already been used. History file: {config.history_file}"
+                    ) from e
+                raise
+
             story = post["title"] + "\n\n" + post["body"]
             source_url = post["url"]
             split_title_meta = {"title": post["title"], "author": post.get("author", "")}
+
+            _split_fetched_path = os.path.join(run_dir, "fetched_post.json")
+            with open(_split_fetched_path, "w") as _fp:
+                json.dump(post, _fp, indent=2)
         elif config.story_mode == StoryMode.LLM_WRITE:
             story = llm_mod.write_story(prompt or "", config)
             source_url = ""
@@ -413,6 +463,19 @@ def run_pipeline(
                 source_url=source_url,
             )
             output_paths.append(video_path)
+
+        if config.history_file:
+            _split_fetched_path = os.path.join(run_dir, "fetched_post.json")
+            if os.path.exists(_split_fetched_path):
+                from .history import PostHistory as _PostHistory
+                with open(_split_fetched_path) as _fp:
+                    _post = json.load(_fp)
+                _PostHistory(config.history_file).record(
+                    post_id=_post["id"],
+                    title=_post["title"],
+                    url=_post["url"],
+                    run_id=run_id,
+                )
 
         return output_paths
 

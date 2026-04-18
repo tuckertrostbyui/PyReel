@@ -264,6 +264,73 @@ The output crop window is always 1080×1920 pixels; `custom_x` and `custom_y` se
 
 ---
 
+## Multi-Account Post History
+
+When running multiple themed accounts, use `history_file` to prevent the same Reddit post from appearing twice. PyReel automatically skips already-used posts and records each new post after a successful run.
+
+```python
+# accounts/amitheasshole/generate.py
+import pyreel
+
+config = pyreel.PyReelConfig(
+    reddit_client_id="YOUR_CLIENT_ID",
+    reddit_client_secret="YOUR_CLIENT_SECRET",
+    story_mode=pyreel.StoryMode.LLM_REWRITE,
+    llm_provider="openai/gpt-4o",
+    llm_api_key="sk-...",
+    history_file="./history.json",   # one file per account folder
+    max_duration=60,
+    broll_local_path="./data/broll/gameplay.mp4",
+    output_dir="./output",
+)
+
+paths = pyreel.generate(subreddit="AmItheAsshole", config=config)
+# history.json is created on first run and updated after each successful video
+```
+
+!!! tip "One history file per account"
+
+    Keep each account's `history.json` inside its own folder. Posts used for your
+    AITA account are tracked separately from your spooky-stories account.
+
+### Inspecting history
+
+```python
+import pyreel
+
+history = pyreel.load_history("./accounts/amitheasshole/history.json")
+
+print(f"{len(history.used_ids)} posts used so far")
+
+# Check if a specific post is already in history
+if history.contains("abc123"):
+    print("Already used")
+```
+
+### Resetting history
+
+```python
+import pyreel
+
+# Clear all entries — posts can be reused after this
+pyreel.clear_history("./accounts/amitheasshole/history.json")
+```
+
+### Handling exhausted history
+
+When all 25 hot posts in a subreddit are already in history, `generate()` raises `PyReelHistoryError`:
+
+```python
+import pyreel
+
+try:
+    paths = pyreel.generate(subreddit="AmItheAsshole", config=config)
+except pyreel.PyReelHistoryError:
+    print("Ran out of new posts — try again later or clear the history.")
+```
+
+---
+
 ## Dry Run
 
 Validate dependencies and configuration without producing any video:

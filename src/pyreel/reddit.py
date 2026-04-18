@@ -8,6 +8,7 @@ def fetch_post(
     subreddit: str,
     post_id: Optional[str],
     config: PyReelConfig,
+    exclude_ids: Optional[set] = None,
 ) -> dict:
     if not config.reddit_client_id or not config.reddit_client_secret:
         raise PyReelRedditError(
@@ -40,6 +41,8 @@ def fetch_post(
             if not submission.is_self:
                 continue
             if not submission.selftext or submission.selftext in ("[removed]", "[deleted]"):
+                continue
+            if exclude_ids and submission.id in exclude_ids:
                 continue
             return _submission_to_dict(submission)
 

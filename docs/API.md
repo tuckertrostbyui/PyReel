@@ -41,6 +41,7 @@ The main entry point. Runs the full PyReel pipeline and returns a list of absolu
 | `PyReelPipelineError` | Any pipeline stage fails. The stage name and root cause are included in the message. |
 | `PyReelConfigError` | Invalid or incompatible config values detected before the pipeline starts. |
 | `PyReelDepsError` | FFmpeg, ImageMagick, or Python version requirements not met. |
+| `PyReelHistoryError` | `history_file` is set and all available posts in the subreddit are already in history. |
 
 ---
 
@@ -107,6 +108,7 @@ Required when `story_mode=StoryMode.FETCH`.
 | `reddit_client_id` | `str \| None` | `None` | Reddit API client ID. Get one at [reddit.com/prefs/apps](https://www.reddit.com/prefs/apps). |
 | `reddit_client_secret` | `str \| None` | `None` | Reddit API client secret. |
 | `reddit_user_agent` | `str` | `"pyreel/0.1.0"` | User agent string sent with Reddit API requests. |
+| `history_file` | `str \| None` | `None` | Path to a per-account JSON file tracking used post IDs. When set, already-used posts are automatically skipped. The file is created on first use. See [`PostHistory`](#posthistory). |
 
 ### LLM Fields
 
@@ -154,6 +156,95 @@ Required when `story_mode` is `LLM_REWRITE`, `LLM_WRITE`, or `LLM_SUMMARIZE`.
 | `keep_artifacts` | `bool` | `False` | If `True`, intermediate files (audio.wav, alignment.json, etc.) are kept after the run completes. |
 | `nsfw_filter` | `bool` | `True` | Apply profanity/NSFW filter to story text during sanitization. |
 | `dry_run` | `bool` | `False` | If `True`, validates dependencies and config only — no video is produced. Returns `[]`. |
+
+---
+
+## `load_history()`
+
+```python
+pyreel.load_history(path: str) -> PostHistory
+```
+
+Load (or create) a [`PostHistory`](#posthistory) from the given file path. If the file does not yet exist, an empty history is returned and the file is not created until the first post is recorded.
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `path` | `str` | Path to the history JSON file. Parent directories are created automatically on first write. |
+
+### Returns
+
+[`PostHistory`](#posthistory) — the loaded history object.
+
+---
+
+## `clear_history()`
+
+```python
+pyreel.clear_history(path: str) -> None
+```
+
+Clear all entries from the history file at `path`. Creates the file if it does not exist. Useful for resetting an account to allow posts to be reused.
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `path` | `str` | Path to the history JSON file to clear. |
+
+---
+
+## `PostHistory`
+
+Tracks which Reddit post IDs have already been used for a given account. Loaded and saved as a JSON file; typically you get one via [`load_history()`](#load_history) or by setting `PyReelConfig.history_file`.
+
+```python
+history = pyreel.load_history("./accounts/amitheasshole/history.json")
+
+# Check membership
+history.contains("abc123")   # -> bool
+
+# Inspect used IDs
+history.used_ids             # -> set[str]
+
+# Manually add an entry
+history.record(
+    post_id="abc123",
+    title="AITA for...",
+    url="https://reddit.com/...",
+    run_id="run_20260417_143200_aita-slug",
+)
+
+# Clear all history
+history.clear()
+```
+
+### Methods
+
+| Method | Returns | Description |
+|--------|---------|-------------|
+| `contains(post_id: str)` | `bool` | `True` if this post has already been used. |
+| `record(post_id, title, url, run_id)` | `None` | Append a new entry and persist to disk. Idempotent — calling twice with the same `post_id` is a no-op. |
+| `clear()` | `None` | Remove all entries and persist the empty state to disk. |
+
+### Properties
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `used_ids` | `set[str]` | The set of all recorded post IDs. |
+
+### History File Format
+
+```json
+{
+  "entries": [
+    {
+      "post_id": "abc123",
+      "title": "AITA for not sharing my food?",
+      "url": "https://reddit.com/r/AmItheAsshole/comments/abc123/...",
+      "used_at": "2026-04-17T14:32:00.123456+00:00",
+      "run_id": "run_20260417_143200_aita-slug"
+    }
+  ]
+}
+```
 
 ---
 
@@ -277,6 +368,7 @@ PyReelError
 ├── PyReelConfigError     # Invalid or incompatible configuration
 ├── PyReelDepsError       # Missing system dependency (FFmpeg, ImageMagick, Python version)
 ├── PyReelRedditError     # Reddit API fetch failed (auth error, no suitable posts)
+├── PyReelHistoryError    # All available posts already used (history_file is set)
 ├── PyReelLLMError        # LLM call failed (rate limit, bad key, provider error)
 ├── PyReelTTSError        # Edge TTS synthesis failed
 ├── PyReelAlignError      # WhisperX alignment failed
@@ -294,6 +386,8 @@ import pyreel
 
 try:
     paths = pyreel.generate(subreddit="AmItheAsshole", config=config)
+except pyreel.PyReelHistoryError:
+    print("All available posts already used — try a different subreddit or clear the history.")
 except pyreel.PyReelDepsError as e:
     print(f"Missing dependency: {e}")
 except pyreel.PyReelRedditError as e:

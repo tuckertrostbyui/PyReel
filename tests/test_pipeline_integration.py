@@ -1,12 +1,13 @@
 import json
 import os
+from contextlib import contextmanager
 from pathlib import Path
 from unittest.mock import MagicMock, patch
 
 import pytest
 
 from pyreel.config import PyReelConfig, StoryMode
-from pyreel.exceptions import PyReelDepsError, PyReelPipelineError
+from pyreel.exceptions import PyReelDepsError, PyReelHistoryError, PyReelPipelineError, PyReelRedditError
 from pyreel.pipeline import run_pipeline
 
 
@@ -362,3 +363,179 @@ class TestCheckpointSkipping:
         run_config_path = os.path.join(run_dir, "run_config.json")
         assert os.path.exists(run_config_path), "run_config.json should be written"
         assert os.path.getsize(run_config_path) > 0
+
+
+@contextmanager
+def _full_pipeline_patches(fake_post=None):
+    """Context manager that patches all pipeline stages for integration tests."""
+    fp = fake_post or FAKE_POST
+    with patch("pyreel.deps.check_dependencies", return_value={"passed": True, "issues": []}), \
+         patch("pyreel.subtitles.check_and_patch_imagemagick", return_value=False), \
+         patch("pyreel.reddit.fetch_post", return_value=fp) as mock_reddit, \
+         patch("pyreel.sanitize.sanitize_text", side_effect=lambda t, c: t), \
+         patch("pyreel.tts.generate_audio") as mock_tts, \
+         patch("pyreel.align.align_audio") as mock_align, \
+         patch("pyreel.broll.fetch_broll") as mock_broll, \
+         patch("pyreel.crop.crop_to_portrait") as mock_crop, \
+         patch("pyreel.subtitles.build_subtitle_clips", return_value=[]), \
+         patch("pyreel.compose.compose_video") as mock_compose, \
+         patch("pyreel.metadata.generate_metadata") as mock_meta, \
+         patch("moviepy.audio.io.AudioFileClip.AudioFileClip") as mock_audio:
+
+        def tts_se(text, out_path, cfg):
+            _make_artifact(out_path)
+            return out_path
+        mock_tts.side_effect = tts_se
+
+        def align_se(audio_path, out_path, cfg):
+            os.makedirs(os.path.dirname(os.path.abspath(out_path)), exist_ok=True)
+            with open(out_path, "w") as f:
+                json.dump(FAKE_ALIGNMENT, f)
+            return FAKE_ALIGNMENT
+        mock_align.side_effect = align_se
+
+        def broll_se(run_dir, cfg):
+            path = os.path.join(run_dir, "broll_raw.mp4")
+            _make_artifact(path)
+            return path
+        mock_broll.side_effect = broll_se
+
+        def crop_se(inp, out_path, cfg):
+            _make_artifact(out_path)
+            return out_path
+        mock_crop.side_effect = crop_se
+
+        def compose_se(broll_path, audio_path, subs, out_path, cfg):
+            _make_artifact(out_path)
+            return out_path
+        mock_compose.side_effect = compose_se
+
+        mock_meta.side_effect = _meta_side_effect
+
+        audio_mock = MagicMock()
+        audio_mock.duration = 10.0
+        mock_audio.return_value = audio_mock
+
+        yield mock_reddit
+
+
+class TestHistoryIntegration:
+    def _make_config(self, tmp_path, history_file=None):
+        return PyReelConfig(
+            reddit_client_id="test_id",
+            reddit_client_secret="test_secret",
+            story_mode=StoryMode.FETCH,
+            output_dir=str(tmp_path / "output"),
+            keep_artifacts=True,
+            history_file=history_file,
+        )
+
+    def test_history_file_written_after_successful_run(self, tmp_path):
+        history_path = str(tmp_path / "history.json")
+        config = self._make_config(tmp_path, history_file=history_path)
+
+        with _full_pipeline_patches():
+            run_pipeline(subreddit="tifu", config=config)
+
+        assert os.path.exists(history_path)
+        data = json.loads(Path(history_path).read_text())
+        assert len(data["entries"]) == 1
+        assert data["entries"][0]["post_id"] == FAKE_POST["id"]
+
+    def test_used_post_raises_history_error(self, tmp_path):
+        history_path = str(tmp_path / "history.json")
+        config = self._make_config(tmp_path, history_file=history_path)
+
+        with _full_pipeline_patches():
+            run_pipeline(subreddit="tifu", config=config)
+
+        # Second run: reddit raises no-posts error because all are excluded
+        config2 = self._make_config(tmp_path, history_file=history_path)
+        config2.output_dir = str(tmp_path / "output2")
+        with patch("pyreel.deps.check_dependencies", return_value={"passed": True, "issues": []}), \
+             patch("pyreel.subtitles.check_and_patch_imagemagick", return_value=False), \
+             patch("pyreel.reddit.fetch_post", side_effect=PyReelRedditError("No suitable posts")):
+            with pytest.raises(PyReelHistoryError):
+                run_pipeline(subreddit="tifu", config=config2)
+
+    def test_llm_write_mode_does_not_write_history(self, tmp_path):
+        history_path = str(tmp_path / "history.json")
+        config = PyReelConfig(
+            story_mode=StoryMode.LLM_WRITE,
+            llm_provider="anthropic/claude-3-haiku-20240307",
+            llm_api_key="fake",
+            output_dir=str(tmp_path / "output"),
+            keep_artifacts=True,
+            history_file=history_path,
+        )
+
+        with patch("pyreel.deps.check_dependencies", return_value={"passed": True, "issues": []}), \
+             patch("pyreel.subtitles.check_and_patch_imagemagick", return_value=False), \
+             patch("pyreel.llm.write_story", return_value="Once upon a time there was a story."), \
+             patch("pyreel.sanitize.sanitize_text", side_effect=lambda t, c: t), \
+             patch("pyreel.tts.generate_audio") as mock_tts, \
+             patch("pyreel.align.align_audio") as mock_align, \
+             patch("pyreel.broll.fetch_broll") as mock_broll, \
+             patch("pyreel.crop.crop_to_portrait") as mock_crop, \
+             patch("pyreel.subtitles.build_subtitle_clips", return_value=[]), \
+             patch("pyreel.compose.compose_video") as mock_compose, \
+             patch("pyreel.metadata.generate_metadata") as mock_meta, \
+             patch("moviepy.audio.io.AudioFileClip.AudioFileClip") as mock_audio:
+
+            def tts_se(text, out_path, cfg):
+                _make_artifact(out_path)
+                return out_path
+            mock_tts.side_effect = tts_se
+
+            def align_se(audio_path, out_path, cfg):
+                os.makedirs(os.path.dirname(os.path.abspath(out_path)), exist_ok=True)
+                with open(out_path, "w") as f:
+                    json.dump(FAKE_ALIGNMENT, f)
+                return FAKE_ALIGNMENT
+            mock_align.side_effect = align_se
+
+            def broll_se(run_dir, cfg):
+                path = os.path.join(run_dir, "broll_raw.mp4")
+                _make_artifact(path)
+                return path
+            mock_broll.side_effect = broll_se
+
+            def crop_se(inp, out_path, cfg):
+                _make_artifact(out_path)
+                return out_path
+            mock_crop.side_effect = crop_se
+
+            def compose_se(broll_path, audio_path, subs, out_path, cfg):
+                _make_artifact(out_path)
+                return out_path
+            mock_compose.side_effect = compose_se
+
+            mock_meta.side_effect = _meta_side_effect
+
+            audio_mock = MagicMock()
+            audio_mock.duration = 10.0
+            mock_audio.return_value = audio_mock
+
+            run_pipeline(prompt="Write a scary story", config=config)
+
+        assert not os.path.exists(history_path)
+
+    def test_explicit_post_id_recorded_to_history(self, tmp_path):
+        history_path = str(tmp_path / "history.json")
+        config = self._make_config(tmp_path, history_file=history_path)
+
+        with _full_pipeline_patches():
+            run_pipeline(subreddit="tifu", post_id="abc123", config=config)
+
+        assert os.path.exists(history_path)
+        data = json.loads(Path(history_path).read_text())
+        assert any(e["post_id"] == FAKE_POST["id"] for e in data["entries"])
+
+    def test_history_auto_creates_missing_directory(self, tmp_path):
+        history_path = str(tmp_path / "new_account" / "history.json")
+        config = self._make_config(tmp_path, history_file=history_path)
+
+        with _full_pipeline_patches():
+            run_pipeline(subreddit="tifu", config=config)
+
+        assert os.path.exists(history_path)

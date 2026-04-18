@@ -48,3 +48,7 @@ class PyReelComposeError(PyReelError):
 
 class PyReelTitleCardError(PyReelError):
     pass
+
+
+class PyReelHistoryError(PyReelError):
+    pass

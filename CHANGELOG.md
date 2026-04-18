@@ -2,6 +2,13 @@
 
 <!--next-version-placeholder-->
 
+## v0.1.1 (2026-04-17)
+
+- Post history tracking: `history_file` field on `PyReelConfig` persists used Reddit post IDs to a per-account JSON file, automatically skipping already-used posts on future runs
+- New `PostHistory` class for inspecting and managing account history
+- New helper functions: `load_history()`, `clear_history()`
+- New `PyReelHistoryError` exception raised when all available posts in a subreddit have already been used
+
 ## v0.1.0 (2026-03-26)
 
 - First release of `pyreel`!

@@ -1,6 +1,10 @@
 # PyReel Roadmap
 
-## v0.1.0 (Current)
+## v0.1.1 (Current)
+
+- Post history tracking (`history_file`, `PostHistory`, `load_history()`, `clear_history()`)
+
+## v0.1.0
 
 - Reddit post fetching and text sanitization
 - Edge TTS speech synthesis
@@ -15,12 +19,9 @@
 
 ---
 
-## v2 Features (NOT in v1 — planned for future releases)
+## v2 Features (planned for future releases)
 
-The following features are explicitly **not implemented** in v0.1.0. They are documented here for roadmap planning only.
-
-### 1. Post Deduplication Tracking
-SQLite database at `~/.pyreel/history.db` logging `post_id`, `subreddit`, `timestamp`, `output_path`, `run_id` per `account_id`. `generate()` will accept an optional `account_id: str` parameter. Already-used posts will be skipped automatically to prevent duplicate content.
+The following features are **not yet implemented**. They are documented here for roadmap planning only.
 
 ### 2. Auto-Posting
 - **YouTube Shorts** via YouTube Data API v3
