@@ -182,6 +182,12 @@ def _run_single(
             final_path = os.path.join(run_dir, "story_final.txt")
             with open(final_path, "w") as f:
                 f.write(final_story)
+            if config.story_mode == StoryMode.LLM_REWRITE:
+                hook_line = final_story.split("\n\n", 1)[0].strip()
+                if hook_line:
+                    title_meta["title"] = hook_line
+                    with open(title_meta_path, "w") as f:
+                        json.dump(title_meta, f, indent=2)
             save_checkpoint(run_dir, "story_prepare")
         except PyReelPipelineError:
             raise
@@ -192,6 +198,12 @@ def _run_single(
         final_path = os.path.join(run_dir, "story_final.txt")
         with open(final_path) as f:
             final_story = f.read()
+        if config.story_mode == StoryMode.LLM_REWRITE:
+            hook_line = final_story.split("\n\n", 1)[0].strip()
+            if hook_line:
+                title_meta["title"] = hook_line
+                with open(title_meta_path, "w") as f:
+                    json.dump(title_meta, f, indent=2)
 
     # Stage 5: tts_generate
     audio_path = os.path.join(run_dir, "audio.wav")
