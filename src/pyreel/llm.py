@@ -76,20 +76,18 @@ def rewrite_for_social(text: str, config: PyReelConfig) -> str:
 
 
 def rewrite_with_hook(text: str, config: PyReelConfig) -> str:
-    """Rewrite for social media, opening with the title as a natural hook.
+    """Rewrite for social media, prepending a short generated hook.
 
-    Assumes the first line of `text` is the Reddit post title (as stored by
-    pipeline Stage 2 which writes ``title + "\\n\\n" + body``).
+    Returns ``hook + "\\n\\n" + rewritten_story``. The hook is a standalone
+    1-2 sentence attention-grabber generated from the full rewritten story,
+    not derived directly from the title.
     """
     _require_llm(config)
     target = _word_count_target(config)
-    prompt = (
+
+    story_prompt = (
         f"You are rewriting a Reddit post as a short spoken script for a social media video.\n\n"
         f"Rules:\n"
-        f"- The first line of the story is the post title. Open with it as a natural hook question — "
-        f"keep its authentic Reddit phrasing but expand any acronyms into their full phrase so it sounds "
-        f"natural when spoken aloud (e.g. 'AITA' → 'Am I the asshole', 'TIFU' → 'Today I messed up', "
-        f"'WIBTA' → 'Would I be the asshole'). Only improve the title if it is genuinely vague or boring.\n"
         f"- Tell the story in first person, past tense, the way someone would naturally "
         f"explain it out loud to a friend — conversational, honest, a little casual. "
         f"Not theatrical. Not overdramatic. No cliffhanger narration style.\n"
@@ -100,7 +98,24 @@ def rewrite_with_hook(text: str, config: PyReelConfig) -> str:
         f"- Target {target}.\n\n"
         f"Story:\n{text}"
     )
-    return _call_llm(prompt, config)
+    story = _call_llm(story_prompt, config)
+
+    hook_prompt = (
+        f"Write a short, engaging hook (1-2 sentences, under 20 words) for a Reddit story video.\n\n"
+        f"Rules:\n"
+        f"- Reveal the core conflict or most dramatic detail to create a curiosity gap — "
+        f"but do not spoil the resolution.\n"
+        f"- Use an authentic Reddit storytelling voice: specific, a little self-aware, "
+        f"and conversational (e.g. 'My wife just told me I ruined her sister's wedding — "
+        f"and honestly, she might be right.', 'I made one small decision at work and now "
+        f"my entire family isn't speaking to me.').\n"
+        f"- No hashtags, no emojis, no quotes around the hook, no title card formatting.\n"
+        f"- Output only the hook text. Nothing else.\n\n"
+        f"Story:\n{story}"
+    )
+    hook = _call_llm(hook_prompt, config).strip()
+
+    return hook + "\n\n" + story
 
 
 def summarize_to_fit(text: str, config: PyReelConfig) -> str:
