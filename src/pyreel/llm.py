@@ -86,12 +86,25 @@ def rewrite_with_hook(text: str, config: PyReelConfig) -> str:
     target = _word_count_target(config)
 
     story_prompt = (
-        f"You are rewriting a Reddit post as a short spoken script for a social media video.\n\n"
+        f"You are rewriting a Reddit post as an engaging spoken script for a social media video. "
+        f"Your job is to keep viewers watching — not by being fake or over-the-top, "
+        f"but by telling the story with real personality and sharp pacing.\n\n"
         f"Rules:\n"
-        f"- Tell the story in first person, past tense, the way someone would naturally "
-        f"explain it out loud to a friend — conversational, honest, a little casual. "
-        f"Not theatrical. Not overdramatic. No cliffhanger narration style.\n"
-        f"- Keep the emotional honesty of the original. Don't punch up the drama beyond what's there.\n"
+        f"- Tell the story in first person, past tense. Sound like a real person venting to a "
+        f"friend — direct, a little raw, self-aware.\n"
+        f"- Vary sentence length to control pace. Use short, punchy sentences at moments of "
+        f"tension or revelation. Use longer sentences for setup. Short sentences hit harder. "
+        f"They create urgency.\n"
+        f"- Build tension by releasing information progressively — don't front-load everything. "
+        f"Let details land one at a time so each beat raises the stakes.\n"
+        f"- Lean into the emotional stakes that are already in the story. Don't fabricate drama, "
+        f"but don't soften it either. If something was humiliating, say so. If a decision was "
+        f"impossible, make that felt.\n"
+        f"- Give the narrator reactions, not just a recap. Show what it felt like in the moment — "
+        f"a flash of disbelief, a moment of dread — without melodrama.\n"
+        f"- Cut any detail that doesn't move the story forward. Every sentence should earn its place.\n"
+        f"- End with a strong kicker — a short, punchy final line that lands the emotional or "
+        f"moral weight of the story.\n"
         f"- Expand all Reddit acronyms throughout the script — never leave AITA, NTA, YTA, ESH, "
         f"NAH, TIFU, WIBTA, or similar abbreviations in the output as the script will be read aloud.\n"
         f"- No markdown, no headers, no bullet points, no emojis.\n"
@@ -153,15 +166,66 @@ def split_into_parts(text: str, config: PyReelConfig) -> list[str]:
         return paragraphs if paragraphs else [text]
 
 
-def write_story(prompt: str, config: PyReelConfig) -> str:
+def write_story(prompt: str, config: PyReelConfig, subreddit: Optional[str] = None) -> str:
+    """Write an original story for social media, prepending a short generated hook.
+
+    Returns ``hook + "\\n\\n" + story``. The hook is generated from the written
+    story after it exists, mirroring the rewrite_with_hook approach.
+    """
     _require_llm(config)
     target = _word_count_target(config)
-    llm_prompt = (
-        f"Write an original short story on this topic: {prompt}\n\n"
-        f"Write in first person, present tense. No markdown. "
-        f"Target {target}."
+
+    style_instruction = (
+        f"Write in the style of r/{subreddit} — match the tone, format, and type of story "
+        f"that community posts. "
+        if subreddit
+        else ""
     )
-    return _call_llm(llm_prompt, config)
+    topic_instruction = (
+        f"Base the story on this topic: {prompt}\n\n"
+        if prompt.strip()
+        else ""
+    )
+
+    story_prompt = (
+        f"Write an original short story for a social media video. "
+        f"{style_instruction}"
+        f"{topic_instruction}"
+        f"Write as if you are a real person telling this story to a friend — "
+        f"first person, past tense, direct and a little raw.\n\n"
+        f"Rules:\n"
+        f"- Vary sentence length to control pace. Use short, punchy sentences at moments of "
+        f"tension or revelation. Use longer sentences for setup. Short sentences hit harder. "
+        f"They create urgency.\n"
+        f"- Build tension by releasing information progressively — let details land one at a "
+        f"time so each beat raises the stakes.\n"
+        f"- Make the emotional stakes feel real. If something is humiliating, say so. "
+        f"If a decision is impossible, make that felt.\n"
+        f"- Give the narrator reactions, not just a recap — a flash of disbelief, a moment of "
+        f"dread — without melodrama.\n"
+        f"- Every sentence should earn its place. Cut anything that doesn't move the story forward.\n"
+        f"- End with a strong kicker — a short, punchy final line that lands the emotional or "
+        f"moral weight of the story.\n"
+        f"- No markdown, no headers, no bullet points, no emojis.\n"
+        f"- Target {target}.\n\n"
+    )
+    story = _call_llm(story_prompt, config)
+
+    hook_prompt = (
+        f"Write a short, engaging hook (1-2 sentences, under 20 words) for a social media story video.\n\n"
+        f"Rules:\n"
+        f"- Reveal the core conflict or most dramatic detail to create a curiosity gap — "
+        f"but do not spoil the resolution.\n"
+        f"- Use an authentic, conversational voice: specific, a little self-aware "
+        f"(e.g. 'I made one small decision and it cost me everything.', "
+        f"'Nobody warned me it would end like this.').\n"
+        f"- No hashtags, no emojis, no quotes around the hook, no title card formatting.\n"
+        f"- Output only the hook text. Nothing else.\n\n"
+        f"Story:\n{story}"
+    )
+    hook = _call_llm(hook_prompt, config).strip()
+
+    return hook + "\n\n" + story
 
 
 def generate_metadata(story: str, config: PyReelConfig) -> dict:

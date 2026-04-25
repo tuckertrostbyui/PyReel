@@ -117,7 +117,7 @@ def _run_single(
                     json.dump(post, _fp, indent=2)
             elif config.story_mode == StoryMode.LLM_WRITE:
                 from . import llm as llm_mod
-                story = llm_mod.write_story(prompt or "", config)
+                story = llm_mod.write_story(prompt or "", config, subreddit=subreddit)
                 first_line = story.split("\n")[0].strip()[:200]
                 title_meta = {"title": first_line, "author": ""}
             else:
@@ -432,7 +432,7 @@ def run_pipeline(
             with open(_split_fetched_path, "w") as _fp:
                 json.dump(post, _fp, indent=2)
         elif config.story_mode == StoryMode.LLM_WRITE:
-            story = llm_mod.write_story(prompt or "", config)
+            story = llm_mod.write_story(prompt or "", config, subreddit=subreddit)
             source_url = ""
             first_line = story.split("\n")[0].strip()[:200]
             split_title_meta = {"title": first_line, "author": ""}
