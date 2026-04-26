@@ -21,6 +21,23 @@ def _word_count_target(config: PyReelConfig) -> str:
     return f"approximately {max_words} words"
 
 
+def _hook_prompt(story: str) -> str:
+    return (
+        f"Write a short hook (1-2 sentences, under 20 words) for a Reddit story video.\n\n"
+        f"Rules:\n"
+        f"- Always name the specific relationship — say 'my mom', 'my mother-in-law', 'my boss', "
+        f"'my husband', etc. Never use vague pronouns like 'she', 'he', or 'they' on their own.\n"
+        f"- Tease the core conflict without spoiling the resolution. Make the viewer need to know what happened.\n"
+        f"- Sound like a real person venting, not a polished teaser. Casual, a little blunt, specific.\n"
+        f"- Good examples: 'My mother-in-law ignored the one rule I set and then acted shocked when "
+        f"I lost it.', 'My mom invited herself on our vacation and somehow I ended up being the bad guy.', "
+        f"'My boss took credit for my work for two years and I only just found out.'\n"
+        f"- No hashtags, no emojis, no quotes around the hook, no title card formatting.\n"
+        f"- Output only the hook text. Nothing else.\n\n"
+        f"Story:\n{story}"
+    )
+
+
 def _require_llm(config: PyReelConfig) -> None:
     if not config.llm_provider:
         raise PyReelLLMError("llm_provider is required in PyReelConfig for LLM features.")
@@ -87,21 +104,25 @@ def rewrite_with_hook(text: str, config: PyReelConfig) -> str:
 
     story_prompt = (
         f"You are rewriting a Reddit post as an engaging spoken script for a social media video. "
-        f"Your job is to keep viewers watching — not by being fake or over-the-top, "
-        f"but by telling the story with real personality and sharp pacing.\n\n"
+        f"Your job is to keep viewers watching — tell the story with real personality, "
+        f"sharp pacing, and genuine emotion.\n\n"
         f"Rules:\n"
-        f"- Tell the story in first person, past tense. Sound like a real person venting to a "
-        f"friend — direct, a little raw, self-aware.\n"
-        f"- Vary sentence length to control pace. Use short, punchy sentences at moments of "
-        f"tension or revelation. Use longer sentences for setup. Short sentences hit harder. "
-        f"They create urgency.\n"
+        f"- First person, past tense. Sound like a real person venting to a friend — direct, "
+        f"a little raw, self-aware. Not polished fiction, not a YA novel.\n"
+        f"- Keep every detail grounded and believable. Real people overstep in mundane, "
+        f"recognisable ways — showing up uninvited, making a passive-aggressive comment, "
+        f"ignoring an obvious boundary. Avoid cinematic or staged details that no real person "
+        f"would actually do (e.g. wearing someone's wedding robe, dramatically ripping pages from "
+        f"a journal). If a detail feels like a movie villain move, replace it with something "
+        f"a real, oblivious person would actually do.\n"
+        f"- Use concrete details — real-sounding names, ages, specific things people said or did. "
+        f"Vague is forgettable.\n"
+        f"- Vary sentence length to control pace. Short sentences hit harder at key moments. "
+        f"Longer ones for setup and context.\n"
         f"- Build tension by releasing information progressively — don't front-load everything. "
-        f"Let details land one at a time so each beat raises the stakes.\n"
+        f"Let each beat land before moving to the next.\n"
         f"- Lean into the emotional stakes that are already in the story. Don't fabricate drama, "
-        f"but don't soften it either. If something was humiliating, say so. If a decision was "
-        f"impossible, make that felt.\n"
-        f"- Give the narrator reactions, not just a recap. Show what it felt like in the moment — "
-        f"a flash of disbelief, a moment of dread — without melodrama.\n"
+        f"but don't soften it either. If something was infuriating or humiliating, say so plainly.\n"
         f"- Cut any detail that doesn't move the story forward. Every sentence should earn its place.\n"
         f"- End with a strong kicker — a short, punchy final line that lands the emotional or "
         f"moral weight of the story.\n"
@@ -112,21 +133,7 @@ def rewrite_with_hook(text: str, config: PyReelConfig) -> str:
         f"Story:\n{text}"
     )
     story = _call_llm(story_prompt, config)
-
-    hook_prompt = (
-        f"Write a short, engaging hook (1-2 sentences, under 20 words) for a Reddit story video.\n\n"
-        f"Rules:\n"
-        f"- Reveal the core conflict or most dramatic detail to create a curiosity gap — "
-        f"but do not spoil the resolution.\n"
-        f"- Use an authentic Reddit storytelling voice: specific, a little self-aware, "
-        f"and conversational (e.g. 'My wife just told me I ruined her sister's wedding — "
-        f"and honestly, she might be right.', 'I made one small decision at work and now "
-        f"my entire family isn't speaking to me.').\n"
-        f"- No hashtags, no emojis, no quotes around the hook, no title card formatting.\n"
-        f"- Output only the hook text. Nothing else.\n\n"
-        f"Story:\n{story}"
-    )
-    hook = _call_llm(hook_prompt, config).strip()
+    hook = _call_llm(_hook_prompt(story), config).strip()
 
     return hook + "\n\n" + story
 
@@ -166,7 +173,12 @@ def split_into_parts(text: str, config: PyReelConfig) -> list[str]:
         return paragraphs if paragraphs else [text]
 
 
-def write_story(prompt: str, config: PyReelConfig, subreddit: Optional[str] = None) -> str:
+def write_story(
+    prompt: str,
+    config: PyReelConfig,
+    subreddit: Optional[str] = None,
+    past_hooks: Optional[list] = None,
+) -> str:
     """Write an original story for social media, prepending a short generated hook.
 
     Returns ``hook + "\\n\\n" + story``. The hook is generated from the written
@@ -177,53 +189,55 @@ def write_story(prompt: str, config: PyReelConfig, subreddit: Optional[str] = No
 
     style_instruction = (
         f"Write in the style of r/{subreddit} — match the tone, format, and type of story "
-        f"that community posts. "
+        f"that community posts.\n\n"
         if subreddit
         else ""
     )
     topic_instruction = (
-        f"Base the story on this topic: {prompt}\n\n"
+        f"The story MUST be specifically about: {prompt}\n"
+        f"This is the core of the story — do not drift from it or treat it as a loose suggestion.\n\n"
         if prompt.strip()
         else ""
     )
 
     story_prompt = (
-        f"Write an original short story for a social media video. "
-        f"{style_instruction}"
+        f"Write an original short story for a social media video.\n\n"
         f"{topic_instruction}"
+        f"{style_instruction}"
         f"Write as if you are a real person telling this story to a friend — "
-        f"first person, past tense, direct and a little raw.\n\n"
+        f"first person, past tense, direct and a little raw. "
+        f"Not polished fiction, not a YA novel.\n\n"
         f"Rules:\n"
-        f"- Vary sentence length to control pace. Use short, punchy sentences at moments of "
-        f"tension or revelation. Use longer sentences for setup. Short sentences hit harder. "
-        f"They create urgency.\n"
-        f"- Build tension by releasing information progressively — let details land one at a "
-        f"time so each beat raises the stakes.\n"
-        f"- Make the emotional stakes feel real. If something is humiliating, say so. "
-        f"If a decision is impossible, make that felt.\n"
-        f"- Give the narrator reactions, not just a recap — a flash of disbelief, a moment of "
-        f"dread — without melodrama.\n"
+        f"- Keep every detail grounded and believable. Real people overstep in mundane, "
+        f"recognisable ways — showing up uninvited, making a passive-aggressive comment, "
+        f"ignoring an obvious boundary. Avoid cinematic or staged details that no real person "
+        f"would actually do (e.g. wearing someone's wedding robe, dramatically ripping pages from "
+        f"a journal). If a detail feels like a movie villain move, replace it with something "
+        f"a real, oblivious person would actually do.\n"
+        f"- Use concrete details — real-sounding names, ages, specific things people said or did. "
+        f"Vague is forgettable.\n"
+        f"- Vary sentence length to control pace. Short sentences hit harder at key moments. "
+        f"Longer ones for setup and context.\n"
+        f"- Build tension by releasing information progressively — let each beat land before "
+        f"moving to the next.\n"
+        f"- Lean into the emotional stakes. If something is infuriating or humiliating, say so plainly.\n"
         f"- Every sentence should earn its place. Cut anything that doesn't move the story forward.\n"
         f"- End with a strong kicker — a short, punchy final line that lands the emotional or "
         f"moral weight of the story.\n"
         f"- No markdown, no headers, no bullet points, no emojis.\n"
         f"- Target {target}.\n\n"
+        + (f"Remember: the story MUST be specifically about: {prompt}\n\n" if prompt.strip() else "")
+        + (
+            f"The following story scenarios have already been used — do NOT repeat them. "
+            f"Write a completely different scenario, relationship, and conflict:\n"
+            + "".join(f"- {h}\n" for h in (past_hooks or [])[-15:])
+            + "\n"
+            if past_hooks
+            else ""
+        )
     )
     story = _call_llm(story_prompt, config)
-
-    hook_prompt = (
-        f"Write a short, engaging hook (1-2 sentences, under 20 words) for a social media story video.\n\n"
-        f"Rules:\n"
-        f"- Reveal the core conflict or most dramatic detail to create a curiosity gap — "
-        f"but do not spoil the resolution.\n"
-        f"- Use an authentic, conversational voice: specific, a little self-aware "
-        f"(e.g. 'I made one small decision and it cost me everything.', "
-        f"'Nobody warned me it would end like this.').\n"
-        f"- No hashtags, no emojis, no quotes around the hook, no title card formatting.\n"
-        f"- Output only the hook text. Nothing else.\n\n"
-        f"Story:\n{story}"
-    )
-    hook = _call_llm(hook_prompt, config).strip()
+    hook = _call_llm(_hook_prompt(story), config).strip()
 
     return hook + "\n\n" + story
 

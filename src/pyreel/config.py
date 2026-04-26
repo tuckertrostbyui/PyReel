@@ -77,6 +77,7 @@ class PyReelConfig:
     # LLM (opt-in)
     llm_provider: Optional[str] = None
     llm_api_key: Optional[str] = None
+    story_log_file: Optional[str] = None  # path to per-account LLM_WRITE story log JSON
 
     # TTS
     tts_voice: str = "en-US-GuyNeural"

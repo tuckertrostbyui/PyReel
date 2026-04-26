@@ -66,6 +66,23 @@ def _run_stage(run_dir: str, stage_name: str, fn, *args, **kwargs):
     return result
 
 
+def _read_story_log(path: Optional[str]) -> list:
+    if not path or not os.path.exists(path):
+        return []
+    with open(path) as f:
+        data = json.load(f)
+    return data if isinstance(data, list) else []
+
+
+def _append_story_log(path: Optional[str], hook: str) -> None:
+    if not path or not hook:
+        return
+    entries = _read_story_log(path)
+    entries.append(hook)
+    with open(path, "w") as f:
+        json.dump(entries, f, indent=2)
+
+
 def _load_artifact(path: str):
     if path.endswith(".json"):
         with open(path) as f:
@@ -117,9 +134,13 @@ def _run_single(
                     json.dump(post, _fp, indent=2)
             elif config.story_mode == StoryMode.LLM_WRITE:
                 from . import llm as llm_mod
-                story = llm_mod.write_story(prompt or "", config, subreddit=subreddit)
+                _past_hooks = _read_story_log(config.story_log_file)
+                story = llm_mod.write_story(
+                    prompt or "", config, subreddit=subreddit, past_hooks=_past_hooks
+                )
                 first_line = story.split("\n")[0].strip()[:200]
                 title_meta = {"title": first_line, "author": ""}
+                _append_story_log(config.story_log_file, first_line)
             else:
                 story = story or ""
                 first_line = story.split("\n")[0].strip()[:200]
@@ -432,9 +453,13 @@ def run_pipeline(
             with open(_split_fetched_path, "w") as _fp:
                 json.dump(post, _fp, indent=2)
         elif config.story_mode == StoryMode.LLM_WRITE:
-            story = llm_mod.write_story(prompt or "", config, subreddit=subreddit)
+            _past_hooks = _read_story_log(config.story_log_file)
+            story = llm_mod.write_story(
+                prompt or "", config, subreddit=subreddit, past_hooks=_past_hooks
+            )
             source_url = ""
             first_line = story.split("\n")[0].strip()[:200]
+            _append_story_log(config.story_log_file, first_line)
             split_title_meta = {"title": first_line, "author": ""}
         else:
             story = prompt or ""
