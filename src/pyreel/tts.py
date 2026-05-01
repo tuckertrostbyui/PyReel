@@ -62,3 +62,24 @@ def generate_audio(text: str, output_path: str, config: PyReelConfig) -> str:
     finally:
         if os.path.exists(mp3_path):
             os.remove(mp3_path)
+
+
+def normalize_voiceover(input_path: str, output_path: str) -> str:
+    if not os.path.exists(input_path) or os.path.getsize(input_path) == 0:
+        raise PyReelTTSError(f"Voiceover file not found or empty: {input_path}")
+
+    os.makedirs(os.path.dirname(os.path.abspath(output_path)), exist_ok=True)
+
+    result = subprocess.run(
+        ["ffmpeg", "-y", "-i", input_path, "-ar", "16000", "-ac", "1", output_path],
+        capture_output=True,
+        text=True,
+    )
+
+    if result.returncode != 0:
+        raise PyReelTTSError(f"ffmpeg voiceover conversion failed: {result.stderr}")
+
+    if not os.path.exists(output_path) or os.path.getsize(output_path) == 0:
+        raise PyReelTTSError("ffmpeg produced an empty or missing wav file from voiceover.")
+
+    return output_path

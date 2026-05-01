@@ -82,6 +82,8 @@ class PyReelConfig:
     # TTS
     tts_voice: str = "en-US-GuyNeural"
     tts_rate: str = "+0%"
+    voiceover_audio: Optional[str] = None  # path to pre-recorded audio; skips TTS when set
+    stop_after_story: bool = False          # stop after story_prepare so user can record voiceover
 
     # WhisperX
     whisper_model: str = "base"

@@ -30,6 +30,7 @@ from .exceptions import (
     PyReelComposeError,
     PyReelTitleCardError,
     PyReelHistoryError,
+    PyReelStoryReadyError,
 )
 from .history import PostHistory
 from .deps import check_dependencies
@@ -51,12 +52,14 @@ def generate(
     post_id: str | None = None,
     prompt: str | None = None,
     config: PyReelConfig | None = None,
+    run_dir: str | None = None,
 ) -> list[str]:
     return run_pipeline(
         subreddit=subreddit,
         post_id=post_id,
         prompt=prompt,
         config=config,
+        run_dir=run_dir,
     )
 
 
@@ -86,6 +89,7 @@ __all__ = [
     "PyReelTitleCardError",
     "PostHistory",
     "PyReelHistoryError",
+    "PyReelStoryReadyError",
     "load_history",
     "clear_history",
 ]

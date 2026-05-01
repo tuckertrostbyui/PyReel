@@ -15,7 +15,7 @@ from .checkpoint import (
     stage_complete,
 )
 from .config import PyReelConfig, SeriesMode, StoryMode
-from .exceptions import PyReelHistoryError, PyReelPipelineError, PyReelRedditError
+from .exceptions import PyReelHistoryError, PyReelPipelineError, PyReelRedditError, PyReelStoryReadyError
 
 logger = logging.getLogger(__name__)
 
@@ -215,6 +215,10 @@ def _run_single(
         except Exception as e:
             logger.error(f"[pipeline] Stage story_prepare failed: {e}")
             raise PyReelPipelineError(f"Stage story_prepare failed: {e}") from e
+
+        if config.stop_after_story:
+            logger.info(f"[pipeline] stop_after_story=True — story ready at {final_path}")
+            raise PyReelStoryReadyError(story_path=final_path, run_dir=run_dir)
     else:
         final_path = os.path.join(run_dir, "story_final.txt")
         with open(final_path) as f:
@@ -226,11 +230,18 @@ def _run_single(
                 with open(title_meta_path, "w") as f:
                     json.dump(title_meta, f, indent=2)
 
+        if config.stop_after_story:
+            logger.info(f"[pipeline] stop_after_story=True — story ready at {final_path}")
+            raise PyReelStoryReadyError(story_path=final_path, run_dir=run_dir)
+
     # Stage 5: tts_generate
     audio_path = os.path.join(run_dir, "audio.wav")
     if not stage_complete(run_dir, "tts_generate"):
         try:
-            tts.generate_audio(final_story, audio_path, config)
+            if config.voiceover_audio:
+                tts.normalize_voiceover(config.voiceover_audio, audio_path)
+            else:
+                tts.generate_audio(final_story, audio_path, config)
         except PyReelPipelineError:
             raise
         except Exception as e:
@@ -397,6 +408,7 @@ def run_pipeline(
     post_id: Optional[str] = None,
     prompt: Optional[str] = None,
     config: Optional[PyReelConfig] = None,
+    run_dir: Optional[str] = None,
 ) -> list[str]:
     if config is None:
         config = PyReelConfig()
@@ -406,8 +418,11 @@ def run_pipeline(
 
     # Stage 1: deps_check
     title_for_dir = subreddit or prompt or "story"
-    run_dir, run_id = _make_run_dir(config, title_for_dir)
-    init_checkpoint(run_dir, run_id, config)
+    if run_dir is None:
+        run_dir, run_id = _make_run_dir(config, title_for_dir)
+        init_checkpoint(run_dir, run_id, config)
+    else:
+        run_id = os.path.basename(run_dir)
 
     try:
         deps.check_dependencies(config)
