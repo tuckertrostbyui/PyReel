@@ -1,0 +1,2098 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://tuckertrost.github.io/pyreel/API/">
+      
+      
+        <link rel="prev" href="..">
+      
+      
+        <link rel="next" href="../code-examples/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/favicon.ico">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>API Reference - PyReel Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Merriweather+Sans:300,300i,400,400i,700,700i%7CRed+Hat+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Merriweather Sans";--md-code-font:"Red Hat Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/_mkdocstrings.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="deep-purple" data-md-color-accent="pink">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#api-reference" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="PyReel Documentation" class="md-header__button md-logo" aria-label="PyReel Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M0 96c0-35.3 28.7-64 64-64h320c35.3 0 64 28.7 64 64v320c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64zm48 272v32c0 8.8 7.2 16 16 16h32c8.8 0 16-7.2 16-16v-32c0-8.8-7.2-16-16-16H64c-8.8 0-16 7.2-16 16m304-16c-8.8 0-16 7.2-16 16v32c0 8.8 7.2 16 16 16h32c8.8 0 16-7.2 16-16v-32c0-8.8-7.2-16-16-16zM48 240v32c0 8.8 7.2 16 16 16h32c8.8 0 16-7.2 16-16v-32c0-8.8-7.2-16-16-16H64c-8.8 0-16 7.2-16 16m304-16c-8.8 0-16 7.2-16 16v32c0 8.8 7.2 16 16 16h32c8.8 0 16-7.2 16-16v-32c0-8.8-7.2-16-16-16zM48 112v32c0 8.8 7.2 16 16 16h32c8.8 0 16-7.2 16-16v-32c0-8.8-7.2-16-16-16H64c-8.8 0-16 7.2-16 16m304-16c-8.8 0-16 7.2-16 16v32c0 8.8 7.2 16 16 16h32c8.8 0 16-7.2 16-16v-32c0-8.8-7.2-16-16-16z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            PyReel Documentation
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              API Reference
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="deep-purple" data-md-color-accent="pink"  aria-label="Dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="deep-purple" data-md-color-accent="pink"  aria-label="Light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="PyReel Documentation" class="md-nav__button md-logo" aria-label="PyReel Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M0 96c0-35.3 28.7-64 64-64h320c35.3 0 64 28.7 64 64v320c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64zm48 272v32c0 8.8 7.2 16 16 16h32c8.8 0 16-7.2 16-16v-32c0-8.8-7.2-16-16-16H64c-8.8 0-16 7.2-16 16m304-16c-8.8 0-16 7.2-16 16v32c0 8.8 7.2 16 16 16h32c8.8 0 16-7.2 16-16v-32c0-8.8-7.2-16-16-16zM48 240v32c0 8.8 7.2 16 16 16h32c8.8 0 16-7.2 16-16v-32c0-8.8-7.2-16-16-16H64c-8.8 0-16 7.2-16 16m304-16c-8.8 0-16 7.2-16 16v32c0 8.8 7.2 16 16 16h32c8.8 0 16-7.2 16-16v-32c0-8.8-7.2-16-16-16zM48 112v32c0 8.8 7.2 16 16 16h32c8.8 0 16-7.2 16-16v-32c0-8.8-7.2-16-16-16H64c-8.8 0-16 7.2-16 16m304-16c-8.8 0-16 7.2-16 16v32c0 8.8 7.2 16 16 16h32c8.8 0 16-7.2 16-16v-32c0-8.8-7.2-16-16-16z"/></svg>
+
+    </a>
+    PyReel Documentation
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API Reference
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API Reference
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#generate" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        generate()
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="generate()">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Parameters
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#returns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Returns
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#raises" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Raises
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#check_dependencies" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        check_dependencies()
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="check_dependencies()">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#returns_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Returns
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#raises_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Raises
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pyreelconfig" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        PyReelConfig
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="PyReelConfig">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#story-fields" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Story Fields
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#reddit-fields" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Reddit Fields
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#llm-fields" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        LLM Fields
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tts-fields" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        TTS Fields
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#whisperx-fields" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        WhisperX Fields
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#b-roll-fields" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        B-roll Fields
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#video-fields" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Video Fields
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#output-fields" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Output Fields
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#load_history" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        load_history()
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="load_history()">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#returns_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Returns
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#clear_history" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        clear_history()
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#posthistory" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        PostHistory
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="PostHistory">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#methods" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Methods
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#properties" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Properties
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#history-file-format" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        History File Format
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#subtitlestyleconfig" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        SubtitleStyleConfig
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cropconfig" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CropConfig
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#titlecardconfig" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        TitleCardConfig
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#enums" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Enums
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Enums">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#storymode" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        StoryMode
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#seriesmode" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        SeriesMode
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#subtitlestyle" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        SubtitleStyle
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cropstrategy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CropStrategy
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#exceptions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exceptions
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../code-examples/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Code Examples
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#generate" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        generate()
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="generate()">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Parameters
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#returns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Returns
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#raises" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Raises
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#check_dependencies" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        check_dependencies()
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="check_dependencies()">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#returns_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Returns
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#raises_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Raises
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pyreelconfig" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        PyReelConfig
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="PyReelConfig">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#story-fields" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Story Fields
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#reddit-fields" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Reddit Fields
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#llm-fields" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        LLM Fields
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tts-fields" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        TTS Fields
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#whisperx-fields" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        WhisperX Fields
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#b-roll-fields" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        B-roll Fields
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#video-fields" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Video Fields
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#output-fields" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Output Fields
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#load_history" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        load_history()
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="load_history()">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#returns_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Returns
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#clear_history" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        clear_history()
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#posthistory" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        PostHistory
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="PostHistory">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#methods" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Methods
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#properties" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Properties
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#history-file-format" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        History File Format
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#subtitlestyleconfig" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        SubtitleStyleConfig
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cropconfig" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CropConfig
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#titlecardconfig" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        TitleCardConfig
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#enums" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Enums
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Enums">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#storymode" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        StoryMode
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#seriesmode" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        SeriesMode
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#subtitlestyle" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        SubtitleStyle
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cropstrategy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CropStrategy
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#exceptions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exceptions
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="api-reference">API Reference</h1>
+<p>Complete public API for PyReel v0.1.0. All symbols are importable directly from the <code>pyreel</code> namespace:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">pyreel</span>
+</span></code></pre></div>
+<hr />
+<h2 id="generate"><code>generate()</code></h2>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="n">pyreel</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>    <span class="n">subreddit</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>    <span class="n">post_id</span><span class="p">:</span>   <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>    <span class="n">prompt</span><span class="p">:</span>    <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>    <span class="n">config</span><span class="p">:</span>    <span class="n">PyReelConfig</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+</span></code></pre></div>
+<p>The main entry point. Runs the full PyReel pipeline and returns a list of absolute paths to the rendered <code>.mp4</code> file(s).</p>
+<h3 id="parameters">Parameters</h3>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>subreddit</code></td>
+<td><code>str \| None</code></td>
+<td>Subreddit name (without <code>r/</code>). Required when <code>story_mode=StoryMode.FETCH</code>.</td>
+</tr>
+<tr>
+<td><code>post_id</code></td>
+<td><code>str \| None</code></td>
+<td>Specific Reddit post ID (the alphanumeric string from the URL). If omitted with <code>StoryMode.FETCH</code>, a random top self-post is fetched from the subreddit.</td>
+</tr>
+<tr>
+<td><code>prompt</code></td>
+<td><code>str \| None</code></td>
+<td>Text prompt passed to the LLM when <code>story_mode=StoryMode.LLM_WRITE</code>, or seed text for <code>LLM_SUMMARIZE</code>.</td>
+</tr>
+<tr>
+<td><code>config</code></td>
+<td><code>PyReelConfig \| None</code></td>
+<td>Configuration object. If <code>None</code>, a default <code>PyReelConfig()</code> is used.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="returns">Returns</h3>
+<p><code>list[str]</code> — File paths to rendered <code>.mp4</code> files. Contains one path in <code>SeriesMode.SINGLE</code> and one path per part in <code>SeriesMode.SPLIT</code>. Returns an empty list when <code>config.dry_run=True</code>.</p>
+<h3 id="raises">Raises</h3>
+<table>
+<thead>
+<tr>
+<th>Exception</th>
+<th>When</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>PyReelPipelineError</code></td>
+<td>Any pipeline stage fails. The stage name and root cause are included in the message.</td>
+</tr>
+<tr>
+<td><code>PyReelConfigError</code></td>
+<td>Invalid or incompatible config values detected before the pipeline starts.</td>
+</tr>
+<tr>
+<td><code>PyReelDepsError</code></td>
+<td>FFmpeg, ImageMagick, or Python version requirements not met.</td>
+</tr>
+<tr>
+<td><code>PyReelHistoryError</code></td>
+<td><code>history_file</code> is set and all available posts in the subreddit are already in history.</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="check_dependencies"><code>check_dependencies()</code></h2>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="n">pyreel</span><span class="o">.</span><span class="n">check_dependencies</span><span class="p">(</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>    <span class="n">config</span><span class="p">:</span> <span class="n">PyReelConfig</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span>
+</span></code></pre></div>
+<p>Validates that all system and credential dependencies are available. Safe to call before <code>generate()</code> as a preflight check.</p>
+<p><strong>Checks performed:</strong></p>
+<ul>
+<li>FFmpeg is on <code>PATH</code></li>
+<li>ImageMagick <code>convert</code> is on <code>PATH</code></li>
+<li>Python &gt;= 3.11</li>
+<li>If <code>config.story_mode=StoryMode.FETCH</code>: Reddit credentials present</li>
+<li>If <code>config</code> uses an LLM mode: <code>llm_provider</code> and <code>llm_api_key</code> present</li>
+<li>If <code>config.broll_local_path</code> is set: path exists on disk</li>
+</ul>
+<h3 id="returns_1">Returns</h3>
+<p><code>dict</code> with keys:</p>
+<ul>
+<li><code>"passed"</code> (<code>bool</code>) — <code>True</code> if all checks pass.</li>
+<li><code>"issues"</code> (<code>list[str]</code>) — Empty on success; human-readable failure descriptions on failure.</li>
+</ul>
+<h3 id="raises_1">Raises</h3>
+<p><code>PyReelDepsError</code> — Raised (not just returned) if any check fails.</p>
+<hr />
+<h2 id="pyreelconfig"><code>PyReelConfig</code></h2>
+<p>The main configuration dataclass. All fields are optional with sensible defaults.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="n">config</span> <span class="o">=</span> <span class="n">pyreel</span><span class="o">.</span><span class="n">PyReelConfig</span><span class="p">(</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>    <span class="n">story_mode</span><span class="o">=</span><span class="n">pyreel</span><span class="o">.</span><span class="n">StoryMode</span><span class="o">.</span><span class="n">FETCH</span><span class="p">,</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>    <span class="n">reddit_client_id</span><span class="o">=</span><span class="s2">&quot;...&quot;</span><span class="p">,</span>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>    <span class="n">reddit_client_secret</span><span class="o">=</span><span class="s2">&quot;...&quot;</span><span class="p">,</span>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>    <span class="n">broll_local_path</span><span class="o">=</span><span class="s2">&quot;./data/broll/gameplay.mp4&quot;</span><span class="p">,</span>
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="p">)</span>
+</span></code></pre></div>
+<h3 id="story-fields">Story Fields</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>story_mode</code></td>
+<td><code>StoryMode</code></td>
+<td><code>StoryMode.FETCH</code></td>
+<td>How the story text is acquired and processed. See <a href="#storymode"><code>StoryMode</code></a>.</td>
+</tr>
+<tr>
+<td><code>series_mode</code></td>
+<td><code>SeriesMode</code></td>
+<td><code>SeriesMode.SINGLE</code></td>
+<td>Whether to produce one video or split a long story into multiple parts. See <a href="#seriesmode"><code>SeriesMode</code></a>.</td>
+</tr>
+<tr>
+<td><code>min_duration</code></td>
+<td><code>int \| None</code></td>
+<td><code>None</code></td>
+<td>Minimum target video duration in seconds. Used as the lower word-count bound for LLM prompts.</td>
+</tr>
+<tr>
+<td><code>max_duration</code></td>
+<td><code>int</code></td>
+<td><code>60</code></td>
+<td>Maximum target video duration in seconds. Controls TTS pacing and LLM word-count targeting.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="reddit-fields">Reddit Fields</h3>
+<p>Required when <code>story_mode=StoryMode.FETCH</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>reddit_client_id</code></td>
+<td><code>str \| None</code></td>
+<td><code>None</code></td>
+<td>Reddit API client ID. Get one at <a href="https://www.reddit.com/prefs/apps">reddit.com/prefs/apps</a>.</td>
+</tr>
+<tr>
+<td><code>reddit_client_secret</code></td>
+<td><code>str \| None</code></td>
+<td><code>None</code></td>
+<td>Reddit API client secret.</td>
+</tr>
+<tr>
+<td><code>reddit_user_agent</code></td>
+<td><code>str</code></td>
+<td><code>"pyreel/0.1.0"</code></td>
+<td>User agent string sent with Reddit API requests.</td>
+</tr>
+<tr>
+<td><code>history_file</code></td>
+<td><code>str \| None</code></td>
+<td><code>None</code></td>
+<td>Path to a per-account JSON file tracking used post IDs. When set, already-used posts are automatically skipped. The file is created on first use. See <a href="#posthistory"><code>PostHistory</code></a>.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="llm-fields">LLM Fields</h3>
+<p>Required when <code>story_mode</code> is <code>LLM_REWRITE</code>, <code>LLM_WRITE</code>, or <code>LLM_SUMMARIZE</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>llm_provider</code></td>
+<td><code>str \| None</code></td>
+<td><code>None</code></td>
+<td>LiteLLM provider string, e.g. <code>"openai/gpt-4o"</code>, <code>"anthropic/claude-3-5-sonnet-20241022"</code>.</td>
+</tr>
+<tr>
+<td><code>llm_api_key</code></td>
+<td><code>str \| None</code></td>
+<td><code>None</code></td>
+<td>API key for the chosen LLM provider.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="tts-fields">TTS Fields</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>tts_voice</code></td>
+<td><code>str</code></td>
+<td><code>"en-US-GuyNeural"</code></td>
+<td>Microsoft Edge TTS voice name. Any voice from the <code>edge-tts</code> voice list is valid.</td>
+</tr>
+<tr>
+<td><code>tts_rate</code></td>
+<td><code>str</code></td>
+<td><code>"+0%"</code></td>
+<td>TTS speaking rate modifier, e.g. <code>"+10%"</code> for faster, <code>"-10%"</code> for slower.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="whisperx-fields">WhisperX Fields</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>whisper_model</code></td>
+<td><code>str</code></td>
+<td><code>"base"</code></td>
+<td>WhisperX model size: <code>"tiny"</code>, <code>"base"</code>, <code>"small"</code>, <code>"medium"</code>, <code>"large"</code>. Larger = more accurate, slower.</td>
+</tr>
+<tr>
+<td><code>whisper_device</code></td>
+<td><code>str</code></td>
+<td><code>"cpu"</code></td>
+<td>Inference device: <code>"cpu"</code> or <code>"cuda"</code>.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="b-roll-fields">B-roll Fields</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>broll_local_path</code></td>
+<td><code>str \| None</code></td>
+<td><code>None</code></td>
+<td>Path to a <code>.mp4</code> or <code>.mov</code> file to use as b-roll background footage. If <code>None</code>, PyReel auto-discovers the first <code>.mp4</code>/<code>.mov</code> in <code>./data/broll/</code> relative to the working directory.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="video-fields">Video Fields</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>crop</code></td>
+<td><code>CropConfig</code></td>
+<td><code>CropConfig()</code></td>
+<td>Portrait crop configuration. See <a href="#cropconfig"><code>CropConfig</code></a>.</td>
+</tr>
+<tr>
+<td><code>subtitle_style</code></td>
+<td><code>SubtitleStyleConfig</code></td>
+<td><code>SubtitleStyleConfig()</code></td>
+<td>Subtitle appearance configuration. See <a href="#subtitlestyleconfig"><code>SubtitleStyleConfig</code></a>.</td>
+</tr>
+<tr>
+<td><code>burn_subtitles</code></td>
+<td><code>bool</code></td>
+<td><code>True</code></td>
+<td>Whether to burn karaoke subtitles into the video.</td>
+</tr>
+<tr>
+<td><code>title_card</code></td>
+<td><code>TitleCardConfig</code></td>
+<td><code>TitleCardConfig()</code></td>
+<td>Title card overlay configuration. See <a href="#titlecardconfig"><code>TitleCardConfig</code></a>.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="output-fields">Output Fields</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>output_dir</code></td>
+<td><code>str</code></td>
+<td><code>"./output"</code></td>
+<td>Directory where run folders are created. Created automatically if it does not exist.</td>
+</tr>
+<tr>
+<td><code>keep_artifacts</code></td>
+<td><code>bool</code></td>
+<td><code>False</code></td>
+<td>If <code>True</code>, intermediate files (audio.wav, alignment.json, etc.) are kept after the run completes.</td>
+</tr>
+<tr>
+<td><code>nsfw_filter</code></td>
+<td><code>bool</code></td>
+<td><code>True</code></td>
+<td>Apply profanity/NSFW filter to story text during sanitization.</td>
+</tr>
+<tr>
+<td><code>dry_run</code></td>
+<td><code>bool</code></td>
+<td><code>False</code></td>
+<td>If <code>True</code>, validates dependencies and config only — no video is produced. Returns <code>[]</code>.</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="load_history"><code>load_history()</code></h2>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="n">pyreel</span><span class="o">.</span><span class="n">load_history</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PostHistory</span>
+</span></code></pre></div>
+<p>Load (or create) a <a href="#posthistory"><code>PostHistory</code></a> from the given file path. If the file does not yet exist, an empty history is returned and the file is not created until the first post is recorded.</p>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>path</code></td>
+<td><code>str</code></td>
+<td>Path to the history JSON file. Parent directories are created automatically on first write.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="returns_2">Returns</h3>
+<p><a href="#posthistory"><code>PostHistory</code></a> — the loaded history object.</p>
+<hr />
+<h2 id="clear_history"><code>clear_history()</code></h2>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="n">pyreel</span><span class="o">.</span><span class="n">clear_history</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span>
+</span></code></pre></div>
+<p>Clear all entries from the history file at <code>path</code>. Creates the file if it does not exist. Useful for resetting an account to allow posts to be reused.</p>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>path</code></td>
+<td><code>str</code></td>
+<td>Path to the history JSON file to clear.</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="posthistory"><code>PostHistory</code></h2>
+<p>Tracks which Reddit post IDs have already been used for a given account. Loaded and saved as a JSON file; typically you get one via <a href="#load_history"><code>load_history()</code></a> or by setting <code>PyReelConfig.history_file</code>.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="n">history</span> <span class="o">=</span> <span class="n">pyreel</span><span class="o">.</span><span class="n">load_history</span><span class="p">(</span><span class="s2">&quot;./accounts/amitheasshole/history.json&quot;</span><span class="p">)</span>
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="c1"># Check membership</span>
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="n">history</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="s2">&quot;abc123&quot;</span><span class="p">)</span>   <span class="c1"># -&gt; bool</span>
+</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>
+</span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a><span class="c1"># Inspect used IDs</span>
+</span><span id="__span-6-7"><a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a><span class="n">history</span><span class="o">.</span><span class="n">used_ids</span>             <span class="c1"># -&gt; set[str]</span>
+</span><span id="__span-6-8"><a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a>
+</span><span id="__span-6-9"><a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a><span class="c1"># Manually add an entry</span>
+</span><span id="__span-6-10"><a id="__codelineno-6-10" name="__codelineno-6-10" href="#__codelineno-6-10"></a><span class="n">history</span><span class="o">.</span><span class="n">record</span><span class="p">(</span>
+</span><span id="__span-6-11"><a id="__codelineno-6-11" name="__codelineno-6-11" href="#__codelineno-6-11"></a>    <span class="n">post_id</span><span class="o">=</span><span class="s2">&quot;abc123&quot;</span><span class="p">,</span>
+</span><span id="__span-6-12"><a id="__codelineno-6-12" name="__codelineno-6-12" href="#__codelineno-6-12"></a>    <span class="n">title</span><span class="o">=</span><span class="s2">&quot;AITA for...&quot;</span><span class="p">,</span>
+</span><span id="__span-6-13"><a id="__codelineno-6-13" name="__codelineno-6-13" href="#__codelineno-6-13"></a>    <span class="n">url</span><span class="o">=</span><span class="s2">&quot;https://reddit.com/...&quot;</span><span class="p">,</span>
+</span><span id="__span-6-14"><a id="__codelineno-6-14" name="__codelineno-6-14" href="#__codelineno-6-14"></a>    <span class="n">run_id</span><span class="o">=</span><span class="s2">&quot;run_20260417_143200_aita-slug&quot;</span><span class="p">,</span>
+</span><span id="__span-6-15"><a id="__codelineno-6-15" name="__codelineno-6-15" href="#__codelineno-6-15"></a><span class="p">)</span>
+</span><span id="__span-6-16"><a id="__codelineno-6-16" name="__codelineno-6-16" href="#__codelineno-6-16"></a>
+</span><span id="__span-6-17"><a id="__codelineno-6-17" name="__codelineno-6-17" href="#__codelineno-6-17"></a><span class="c1"># Clear all history</span>
+</span><span id="__span-6-18"><a id="__codelineno-6-18" name="__codelineno-6-18" href="#__codelineno-6-18"></a><span class="n">history</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+</span></code></pre></div>
+<h3 id="methods">Methods</h3>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Returns</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>contains(post_id: str)</code></td>
+<td><code>bool</code></td>
+<td><code>True</code> if this post has already been used.</td>
+</tr>
+<tr>
+<td><code>record(post_id, title, url, run_id)</code></td>
+<td><code>None</code></td>
+<td>Append a new entry and persist to disk. Idempotent — calling twice with the same <code>post_id</code> is a no-op.</td>
+</tr>
+<tr>
+<td><code>clear()</code></td>
+<td><code>None</code></td>
+<td>Remove all entries and persist the empty state to disk.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="properties">Properties</h3>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>used_ids</code></td>
+<td><code>set[str]</code></td>
+<td>The set of all recorded post IDs.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="history-file-format">History File Format</h3>
+<div class="language-json highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="p">{</span>
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="w">  </span><span class="nt">&quot;entries&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="w">    </span><span class="p">{</span>
+</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="w">      </span><span class="nt">&quot;post_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;abc123&quot;</span><span class="p">,</span>
+</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="w">      </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;AITA for not sharing my food?&quot;</span><span class="p">,</span>
+</span><span id="__span-7-6"><a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a><span class="w">      </span><span class="nt">&quot;url&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://reddit.com/r/AmItheAsshole/comments/abc123/...&quot;</span><span class="p">,</span>
+</span><span id="__span-7-7"><a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a><span class="w">      </span><span class="nt">&quot;used_at&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2026-04-17T14:32:00.123456+00:00&quot;</span><span class="p">,</span>
+</span><span id="__span-7-8"><a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a><span class="w">      </span><span class="nt">&quot;run_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;run_20260417_143200_aita-slug&quot;</span>
+</span><span id="__span-7-9"><a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-7-10"><a id="__codelineno-7-10" name="__codelineno-7-10" href="#__codelineno-7-10"></a><span class="w">  </span><span class="p">]</span>
+</span><span id="__span-7-11"><a id="__codelineno-7-11" name="__codelineno-7-11" href="#__codelineno-7-11"></a><span class="p">}</span>
+</span></code></pre></div>
+<hr />
+<h2 id="subtitlestyleconfig"><code>SubtitleStyleConfig</code></h2>
+<p>Controls the visual appearance of karaoke-style subtitles burned into the video.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="n">pyreel</span><span class="o">.</span><span class="n">SubtitleStyleConfig</span><span class="p">(</span>
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>    <span class="n">style</span><span class="o">=</span><span class="n">pyreel</span><span class="o">.</span><span class="n">SubtitleStyle</span><span class="o">.</span><span class="n">BOLD_WHITE</span><span class="p">,</span>
+</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>    <span class="n">font_size</span><span class="o">=</span><span class="mi">80</span><span class="p">,</span>
+</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a>    <span class="n">active_color</span><span class="o">=</span><span class="s2">&quot;white&quot;</span><span class="p">,</span>
+</span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a>    <span class="n">inactive_color</span><span class="o">=</span><span class="s2">&quot;#888888&quot;</span><span class="p">,</span>
+</span><span id="__span-8-6"><a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a><span class="p">)</span>
+</span></code></pre></div>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>style</code></td>
+<td><code>SubtitleStyle</code></td>
+<td><code>SubtitleStyle.BOLD_WHITE</code></td>
+<td>The subtitle rendering style. See <a href="#subtitlestyle"><code>SubtitleStyle</code></a>.</td>
+</tr>
+<tr>
+<td><code>font</code></td>
+<td><code>str \| None</code></td>
+<td><code>None</code></td>
+<td>Path to a <code>.ttf</code> font file. <code>None</code> uses the bundled Anton-Regular font.</td>
+</tr>
+<tr>
+<td><code>font_size</code></td>
+<td><code>int</code></td>
+<td><code>80</code></td>
+<td>Font size in pixels.</td>
+</tr>
+<tr>
+<td><code>active_color</code></td>
+<td><code>str</code></td>
+<td><code>"white"</code></td>
+<td>Color of the currently-spoken word. Accepts color names or hex strings.</td>
+</tr>
+<tr>
+<td><code>inactive_color</code></td>
+<td><code>str</code></td>
+<td><code>"#888888"</code></td>
+<td>Color of surrounding words (not active).</td>
+</tr>
+<tr>
+<td><code>outline_color</code></td>
+<td><code>str</code></td>
+<td><code>"black"</code></td>
+<td>Drop shadow / outline color.</td>
+</tr>
+<tr>
+<td><code>outline_width</code></td>
+<td><code>int</code></td>
+<td><code>3</code></td>
+<td>Outline thickness in pixels.</td>
+</tr>
+<tr>
+<td><code>position</code></td>
+<td><code>str \| tuple</code></td>
+<td><code>("center", 1350)</code></td>
+<td>Subtitle position. A string (<code>"center"</code>) or an <code>(x, y)</code> pixel tuple passed to MoviePy <code>with_position()</code>.</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="cropconfig"><code>CropConfig</code></h2>
+<p>Controls how footage is cropped to 9:16 portrait (1080×1920).</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="n">pyreel</span><span class="o">.</span><span class="n">CropConfig</span><span class="p">(</span>
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>    <span class="n">strategy</span><span class="o">=</span><span class="n">pyreel</span><span class="o">.</span><span class="n">CropStrategy</span><span class="o">.</span><span class="n">CENTER</span><span class="p">,</span>
+</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="p">)</span>
+</span></code></pre></div>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>strategy</code></td>
+<td><code>CropStrategy</code></td>
+<td><code>CropStrategy.CENTER</code></td>
+<td>Crop strategy. See <a href="#cropstrategy"><code>CropStrategy</code></a>.</td>
+</tr>
+<tr>
+<td><code>custom_x</code></td>
+<td><code>int \| None</code></td>
+<td><code>None</code></td>
+<td>Left-edge pixel of the 1080px crop window. Used only when <code>strategy=CropStrategy.CUSTOM</code>.</td>
+</tr>
+<tr>
+<td><code>custom_y</code></td>
+<td><code>int \| None</code></td>
+<td><code>None</code></td>
+<td>Top-edge pixel of the 1920px crop window. Used only when <code>strategy=CropStrategy.CUSTOM</code>.</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="titlecardconfig"><code>TitleCardConfig</code></h2>
+<p>Controls the Reddit-style title card overlay shown at the start of each video.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="n">pyreel</span><span class="o">.</span><span class="n">TitleCardConfig</span><span class="p">(</span>
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>    <span class="n">enabled</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>    <span class="n">username</span><span class="o">=</span><span class="s2">&quot;u/throwaway&quot;</span><span class="p">,</span>
+</span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a>    <span class="n">avatar_color</span><span class="o">=</span><span class="s2">&quot;#FF4500&quot;</span><span class="p">,</span>
+</span><span id="__span-10-5"><a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a>    <span class="n">card_position</span><span class="o">=</span><span class="s2">&quot;bottom&quot;</span><span class="p">,</span>
+</span><span id="__span-10-6"><a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a><span class="p">)</span>
+</span></code></pre></div>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>enabled</code></td>
+<td><code>bool</code></td>
+<td><code>True</code></td>
+<td>Show the title card. Set to <code>False</code> to skip it entirely.</td>
+</tr>
+<tr>
+<td><code>username</code></td>
+<td><code>str \| None</code></td>
+<td><code>None</code></td>
+<td>Display username. <code>None</code> uses the Reddit post author; falls back to <code>"Anonymous"</code>.</td>
+</tr>
+<tr>
+<td><code>avatar_color</code></td>
+<td><code>str</code></td>
+<td><code>"#FF4500"</code></td>
+<td>Avatar background color (Reddit orange by default). Ignored when <code>avatar_image</code> is set.</td>
+</tr>
+<tr>
+<td><code>avatar_image</code></td>
+<td><code>str \| None</code></td>
+<td><code>None</code></td>
+<td>Path to a custom image file for the avatar. Center-cropped to a circle.</td>
+</tr>
+<tr>
+<td><code>emoji_row</code></td>
+<td><code>str</code></td>
+<td><code>"🎭😱💔🤯🌟😤🔥"</code></td>
+<td>Emoji row shown below the username. Set to <code>""</code> to hide.</td>
+</tr>
+<tr>
+<td><code>vote_count</code></td>
+<td><code>str</code></td>
+<td><code>"99+"</code></td>
+<td>Upvote count displayed on the card.</td>
+</tr>
+<tr>
+<td><code>duration</code></td>
+<td><code>float</code></td>
+<td><code>5.0</code></td>
+<td>Seconds the title card is visible. Automatically overridden when alignment data can compute the exact title speech duration.</td>
+</tr>
+<tr>
+<td><code>font</code></td>
+<td><code>str \| None</code></td>
+<td><code>None</code></td>
+<td>Path to a <code>.ttf</code> font file. <code>None</code> auto-detects a system sans-serif font.</td>
+</tr>
+<tr>
+<td><code>show_verified</code></td>
+<td><code>bool</code></td>
+<td><code>True</code></td>
+<td>Show the Reddit verified badge next to the username.</td>
+</tr>
+<tr>
+<td><code>card_position</code></td>
+<td><code>str</code></td>
+<td><code>"bottom"</code></td>
+<td>Vertical position of the card: <code>"bottom"</code>, <code>"center"</code>, or <code>"top"</code>.</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="enums">Enums</h2>
+<h3 id="storymode"><code>StoryMode</code></h3>
+<p>Controls how the story text is acquired and processed.</p>
+<table>
+<thead>
+<tr>
+<th>Value</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>StoryMode.FETCH</code></td>
+<td>Fetch a post from Reddit via PRAW. Requires Reddit credentials.</td>
+</tr>
+<tr>
+<td><code>StoryMode.LLM_REWRITE</code></td>
+<td>Fetch a Reddit post, then rewrite it with an LLM for social-media pacing and hooks. Requires Reddit credentials and LLM config.</td>
+</tr>
+<tr>
+<td><code>StoryMode.LLM_WRITE</code></td>
+<td>Generate a completely original story from a <code>prompt</code> using an LLM. No Reddit credentials needed.</td>
+</tr>
+<tr>
+<td><code>StoryMode.LLM_SUMMARIZE</code></td>
+<td>Fetch a Reddit post and summarize it to fit within <code>max_duration</code>. Requires Reddit credentials and LLM config.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="seriesmode"><code>SeriesMode</code></h3>
+<table>
+<thead>
+<tr>
+<th>Value</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>SeriesMode.SINGLE</code></td>
+<td>Produce one video.</td>
+</tr>
+<tr>
+<td><code>SeriesMode.SPLIT</code></td>
+<td>Use an LLM to split the story into natural cliffhanger parts and produce one video per part. Requires an LLM provider.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="subtitlestyle"><code>SubtitleStyle</code></h3>
+<table>
+<thead>
+<tr>
+<th>Value</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>SubtitleStyle.BOLD_WHITE</code></td>
+<td>Bold white text with a black outline. The active word is bright white; surrounding words are dimmed.</td>
+</tr>
+<tr>
+<td><code>SubtitleStyle.HIGHLIGHT</code></td>
+<td>Active word is highlighted with a colored background box.</td>
+</tr>
+<tr>
+<td><code>SubtitleStyle.ALLCAPS</code></td>
+<td>All subtitle text is rendered in uppercase with a shadow effect.</td>
+</tr>
+<tr>
+<td><code>SubtitleStyle.ROLLING</code></td>
+<td>Pairs of consecutive words shown together, rolling forward as the narration progresses.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="cropstrategy"><code>CropStrategy</code></h3>
+<table>
+<thead>
+<tr>
+<th>Value</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>CropStrategy.CENTER</code></td>
+<td>Center-crop the footage to 1080×1920. Best for most landscape videos.</td>
+</tr>
+<tr>
+<td><code>CropStrategy.CUSTOM</code></td>
+<td>Crop from a specific pixel coordinate. Set <code>CropConfig.custom_x</code> and <code>custom_y</code>.</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="exceptions">Exceptions</h2>
+<p>All PyReel exceptions inherit from <code>PyReelError</code>.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>PyReelError
+</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>├── PyReelPipelineError   # A pipeline stage failed (wraps the stage-level cause)
+</span><span id="__span-11-3"><a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a>├── PyReelConfigError     # Invalid or incompatible configuration
+</span><span id="__span-11-4"><a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a>├── PyReelDepsError       # Missing system dependency (FFmpeg, ImageMagick, Python version)
+</span><span id="__span-11-5"><a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a>├── PyReelRedditError     # Reddit API fetch failed (auth error, no suitable posts)
+</span><span id="__span-11-6"><a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a>├── PyReelHistoryError    # All available posts already used (history_file is set)
+</span><span id="__span-11-7"><a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a>├── PyReelLLMError        # LLM call failed (rate limit, bad key, provider error)
+</span><span id="__span-11-8"><a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a>├── PyReelTTSError        # Edge TTS synthesis failed
+</span><span id="__span-11-9"><a id="__codelineno-11-9" name="__codelineno-11-9" href="#__codelineno-11-9"></a>├── PyReelAlignError      # WhisperX alignment failed
+</span><span id="__span-11-10"><a id="__codelineno-11-10" name="__codelineno-11-10" href="#__codelineno-11-10"></a>├── PyReelBrollError      # B-roll file not found or unreadable
+</span><span id="__span-11-11"><a id="__codelineno-11-11" name="__codelineno-11-11" href="#__codelineno-11-11"></a>├── PyReelCropError       # Portrait crop failed
+</span><span id="__span-11-12"><a id="__codelineno-11-12" name="__codelineno-11-12" href="#__codelineno-11-12"></a>├── PyReelSubtitleError   # Subtitle rendering failed
+</span><span id="__span-11-13"><a id="__codelineno-11-13" name="__codelineno-11-13" href="#__codelineno-11-13"></a>├── PyReelComposeError    # MoviePy video composition failed
+</span><span id="__span-11-14"><a id="__codelineno-11-14" name="__codelineno-11-14" href="#__codelineno-11-14"></a>└── PyReelTitleCardError  # Title card rendering failed
+</span></code></pre></div>
+<p>Catch <code>PyReelError</code> to handle all pipeline failures in one <code>except</code> clause, or catch specific subclasses for targeted recovery.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">pyreel</span>
+</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>
+</span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a><span class="k">try</span><span class="p">:</span>
+</span><span id="__span-12-4"><a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a>    <span class="n">paths</span> <span class="o">=</span> <span class="n">pyreel</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span><span class="n">subreddit</span><span class="o">=</span><span class="s2">&quot;AmItheAsshole&quot;</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">)</span>
+</span><span id="__span-12-5"><a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a><span class="k">except</span> <span class="n">pyreel</span><span class="o">.</span><span class="n">PyReelHistoryError</span><span class="p">:</span>
+</span><span id="__span-12-6"><a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a>    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;All available posts already used — try a different subreddit or clear the history.&quot;</span><span class="p">)</span>
+</span><span id="__span-12-7"><a id="__codelineno-12-7" name="__codelineno-12-7" href="#__codelineno-12-7"></a><span class="k">except</span> <span class="n">pyreel</span><span class="o">.</span><span class="n">PyReelDepsError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+</span><span id="__span-12-8"><a id="__codelineno-12-8" name="__codelineno-12-8" href="#__codelineno-12-8"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Missing dependency: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span id="__span-12-9"><a id="__codelineno-12-9" name="__codelineno-12-9" href="#__codelineno-12-9"></a><span class="k">except</span> <span class="n">pyreel</span><span class="o">.</span><span class="n">PyReelRedditError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+</span><span id="__span-12-10"><a id="__codelineno-12-10" name="__codelineno-12-10" href="#__codelineno-12-10"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Reddit fetch failed: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span id="__span-12-11"><a id="__codelineno-12-11" name="__codelineno-12-11" href="#__codelineno-12-11"></a><span class="k">except</span> <span class="n">pyreel</span><span class="o">.</span><span class="n">PyReelError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+</span><span id="__span-12-12"><a id="__codelineno-12-12" name="__codelineno-12-12" href="#__codelineno-12-12"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Pipeline error: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span></code></pre></div>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href=".." class="md-footer__link md-footer__link--prev" aria-label="Previous: Home">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                Home
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../code-examples/" class="md-footer__link md-footer__link--next" aria-label="Next: Code Examples">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                Code Examples
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; 2026 Tucker Trost
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://www.github.com/tuckertrost" target="_blank" rel="noopener" title="www.github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://www.linkedin.com/in/tuckertrost" target="_blank" rel="noopener" title="www.linkedin.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3M135.4 416H69V202.2h66.5V416zM102.2 96a38.5 38.5 0 1 1 0 77 38.5 38.5 0 1 1 0-77m282.1 320h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9z"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.footer"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+    
+  </body>
+</html>
