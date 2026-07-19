@@ -64,13 +64,13 @@ Python **3.11 or newer** is required.
 === "pip"
 
     ```bash
-    pip install git+https://github.com/tuckertrostbyui/PyReel.git
+    pip install git+https://github.com/tuckertrost/PyReel.git
     ```
 
 === "uv"
 
     ```bash
-    uv pip install git+https://github.com/tuckertrostbyui/PyReel.git
+    uv pip install git+https://github.com/tuckertrost/PyReel.git
     ```
 
 ---

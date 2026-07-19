@@ -34,12 +34,12 @@ Install before using PyReel:
 ## Installation
 
 ```bash
-pip install git+https://github.com/tuckertrostbyui/PyReel.git
+pip install git+https://github.com/tuckertrost/PyReel.git
 ```
 
 Or with uv:
 ```bash
-uv pip install git+https://github.com/tuckertrostbyui/PyReel.git
+uv pip install git+https://github.com/tuckertrost/PyReel.git
 ```
 
 ---
